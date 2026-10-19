@@ -1,6 +1,10 @@
 package com.townsandkingdoms.duskdelvers;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -28,8 +32,52 @@ public final class DuskCommands {
                 .then(Commands.literal("start")
                         .then(Commands.argument("tier",IntegerArgumentType.integer(1,5))
                                 .executes(ctx -> start(ctx.getSource(),IntegerArgumentType.getInteger(ctx,"tier")))))
+                .then(Commands.literal("portal")
+                        .requires(src -> src.hasPermission(2))
+                        .then(Commands.literal("activate")
+                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                        .executes(ctx -> activatePortal(ctx.getSource(),
+                                                BlockPosArgument.getLoadedBlockPos(ctx, "pos"))))))
                 .then(Commands.literal("exit").executes(ctx -> exit(ctx.getSource())))
                 .then(Commands.literal("status").executes(ctx -> status(ctx.getSource()))));
+    }
+
+    private static int activatePortal(CommandSourceStack source, BlockPos frame) {
+        boolean success = PortalFrames.activate(source.getLevel(), frame);
+        if (success) source.sendSuccess(() -> Component.literal("Expedition portal activated."), false);
+        else source.sendFailure(Component.literal("No complete player-made Duskdelvers frame at that position."));
+        return success ? 1 : 0;
+    }
+
+    /**
+     * Replace the saved return position with a safe point beside the entry
+     * gateway. This avoids re-entering the same portal after extraction.
+     */
+    public static void adjustPortalReturn(ServerPlayer player, ServerLevel original,
+                                          BlockPos portal, Direction.Axis axis,
+                                          double x, double y, double z, Vec3 velocity) {
+        CompoundTag data = player.getPersistentData().getCompound(RETURN_TAG);
+        if (!data.contains("dimension")) return;
+        double speed = axis == Direction.Axis.X ? velocity.z : velocity.x;
+        double plane = (axis == Direction.Axis.X ? portal.getZ() : portal.getX()) + 0.5;
+        double currentNormal = axis == Direction.Axis.X ? z : x;
+        double preferred = speed > 0.01 ? -1.0 : speed < -0.01 ? 1.0
+                : currentNormal < plane ? -1.0 : 1.0;
+
+        for (double side : new double[]{preferred, -preferred}) {
+            double targetX = axis == Direction.Axis.X ? x : plane + side * 2.5;
+            double targetZ = axis == Direction.Axis.X ? plane + side * 2.5 : z;
+            BlockPos feet = BlockPos.containing(targetX, y, targetZ);
+            if (original.getBlockState(feet).isAir()
+                    && original.getBlockState(feet.above()).isAir()
+                    && !original.getBlockState(feet.below()).isAir()) {
+                data.putDouble("x", targetX);
+                data.putDouble("y", y);
+                data.putDouble("z", targetZ);
+                return;
+            }
+        }
+        // Fallback: original position with a cooldown rather than an unsafe teleport.
     }
 
     private static int enter(CommandSourceStack source) throws CommandSyntaxException {
@@ -139,7 +187,7 @@ public final class DuskCommands {
                     " • "+(tag.getBoolean("completed")?"COMPLETED":"active")+
                     " • Encounter entries "+EncounterProfiles.count()));
         } else {
-            player.sendSystemMessage(Component.literal("Duskdelvers 0.2.0: no active expedition. Use /duskdelvers start <1-5>."));
+            player.sendSystemMessage(Component.literal("Duskdelvers 0.2.1: no active expedition. Use /duskdelvers start <1-5>."));
         }
         return 1;
     }

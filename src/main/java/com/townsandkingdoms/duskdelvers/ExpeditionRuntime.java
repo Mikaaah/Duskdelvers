@@ -65,9 +65,10 @@ public final class ExpeditionRuntime {
             if (i==rooms.size()-1 && !tag.getBoolean("completed")) {
                 tag.putBoolean("completed",true);
                 if (DuskConfig.BOSS_REWARDS.get()) DungeonBuilder.bossReward(level,center,layout.tier(),layout.id());
+                PortalFrames.placeReturnGateway(level, center);
                 player.giveExperiencePoints(layout.tier()*25);
                 player.sendSystemMessage(Component.literal(
-                    "Expedition complete! Tier "+layout.tier()+" guardian defeated. Claim the reward chest and use your compass or /duskdelvers exit."));
+                    "Expedition complete! Tier "+layout.tier()+" guardian defeated. Claim your reward and step through the extraction portal, or use /duskdelvers exit."));
             } else {
                 player.sendSystemMessage(Component.literal("Room "+i+" cleared. Continue deeper."));
             }

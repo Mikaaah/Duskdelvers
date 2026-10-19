@@ -36,6 +36,8 @@ public final class DungeonBuilder {
                 placeChest(level,rooms.get(i).offset(4,1,4),layout.tier(),random,false);
             }
         }
+        // The permanent entrance gateway lets players leave without their compass.
+        PortalFrames.placeReturnGateway(level, rooms.get(0));
         // Finish with an arrival marker. This marker does not regenerate rewards.
         level.setBlock(rooms.get(0).below(),Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),2);
     }

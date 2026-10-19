@@ -8,10 +8,31 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.server.level.ServerLevel;
 
 /** Right click: start a run/exit. Sneak right click outside: choose difficulty. */
 public final class DelversCompass extends Item {
     public DelversCompass(Properties properties) { super(properties); }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        if (!PortalFrames.isActivationFrame(level.getBlockState(context.getClickedPos()).getBlock())) {
+            return InteractionResult.PASS;
+        }
+
+        if (level instanceof ServerLevel server) {
+            boolean activated = PortalFrames.activate(server, context.getClickedPos());
+            if (context.getPlayer() != null) {
+                context.getPlayer().sendSystemMessage(Component.literal(activated
+                        ? "Expedition portal activated! Step into the gateway to begin."
+                        : "Incomplete gateway! Use a 4 x 5 frame of one matching tier material, with a clear 2 x 3 opening."));
+            }
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {

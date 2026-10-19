@@ -1,6 +1,8 @@
 package com.townsandkingdoms.duskdelvers;
 
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -15,11 +17,37 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class Duskdelvers {
     public static final String MOD_ID = "duskdelvers";
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
+    private static final DeferredBlock<GatewayBlock> RETURN_GATEWAY = makeGateway("return_gateway", 0);
+    private static final DeferredBlock<GatewayBlock> TIER_1_GATEWAY = makeGateway("tier_1_portal", 1);
+    private static final DeferredBlock<GatewayBlock> TIER_2_GATEWAY = makeGateway("tier_2_portal", 2);
+    private static final DeferredBlock<GatewayBlock> TIER_3_GATEWAY = makeGateway("tier_3_portal", 3);
+    private static final DeferredBlock<GatewayBlock> TIER_4_GATEWAY = makeGateway("tier_4_portal", 4);
+    private static final DeferredBlock<GatewayBlock> TIER_5_GATEWAY = makeGateway("tier_5_portal", 5);
+
+    private static DeferredBlock<GatewayBlock> makeGateway(String name, int tier) {
+        return BLOCKS.register(name, () -> new GatewayBlock(tier,
+                BlockBehaviour.Properties.of().noCollission().noOcclusion()
+                        .strength(-1.0F, 3600000.0F).lightLevel(state -> 11)));
+    }
+
+    public static GatewayBlock gatewayForTier(int tier) {
+        return switch (tier) {
+            case 0 -> RETURN_GATEWAY.get();
+            case 1 -> TIER_1_GATEWAY.get();
+            case 2 -> TIER_2_GATEWAY.get();
+            case 3 -> TIER_3_GATEWAY.get();
+            case 4 -> TIER_4_GATEWAY.get();
+            case 5 -> TIER_5_GATEWAY.get();
+            default -> throw new IllegalArgumentException("Unsupported gateway tier: " + tier);
+        };
+    }
     public static final DeferredItem<Item> DELVERS_COMPASS = ITEMS.register(
             "delvers_compass", () -> new DelversCompass(new Item.Properties().stacksTo(1)));
 
     public Duskdelvers(IEventBus bus, ModContainer container) {
         ITEMS.register(bus);
+        BLOCKS.register(bus);
         bus.addListener(this::creativeTabs);
         container.registerConfig(ModConfig.Type.SERVER, DuskConfig.SPEC);
         NeoForge.EVENT_BUS.addListener(DuskCommands::register);
