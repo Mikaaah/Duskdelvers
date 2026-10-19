@@ -11,18 +11,19 @@
 
 ## Expedition implementation — current 0.2 development
 
-The current source includes implementation work for:
+The current source includes early implementation work for:
 
 - [x] Persistent expedition ID allocation and route planning
-- [x] Five selectable tiers and room-scoped encounters
+- [x] Room construction and five selectable tiers with room-scoped encounters
 - [x] Final guardian and completion reward logic
 - [x] Delver's Compass and server configuration
 
-These items are present in source, but the latest GitHub Actions build failed. They are not a validated or released feature set. Next gate: fix the build, then test the complete loop in-game before changing release/version status.
+These items are present in source, but **are not validated or released**. The GitHub Actions build for the 0.2 implementation commit [failed](https://github.com/Mikaaah/Duskdelvers/actions/runs/39238546032). Next gate: fix the build, then test the complete loop in-game before changing release/version status.
 
 ## Remaining validation and polish
 
-- [ ] Build and load on Minecraft 1.21.1 / NeoForge 21.1.x
+- [ ] Pass a Gradle build on the current source
+- [ ] Load on Minecraft 1.21.1 / NeoForge 21.1.x
 - [ ] Verify repeatable expeditions, room bounds and allocation across restarts
 - [ ] Test room activation, encounter caps, guardian completion and reward behavior
 - [ ] Test exit/origin restoration, death and reconnect cases
