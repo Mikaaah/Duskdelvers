@@ -53,7 +53,7 @@ public final class ExpeditionRuntime {
                         +"Tier "+layout.tier()+" • Room "+i+"/"+(rooms.size()-1)));
             }
 
-            AABB bounds=new AABB(center.offset(-9,0,-9),center.offset(10,7,10));
+            AABB bounds=new AABB(center.getX()-9,center.getY(),center.getZ()-9,center.getX()+10,center.getY()+7,center.getZ()+10);
             final int roomIndex=i;
             List<Mob> alive=level.getEntitiesOfClass(Mob.class,bounds, mob ->
                     mob.isAlive() && mob.getPersistentData().getInt(MOB_RUN)==layout.id()
@@ -84,10 +84,8 @@ public final class ExpeditionRuntime {
             EntityType<?> type=boss?(tier>=3 ? EntityType.RAVAGER : EntityType.WITHER_SKELETON)
                     : EncounterProfiles.pick(tier,rng);
             Entity entity=type.create(level);
-            if (!(entity instanceof Mob mob)) {
-                mob=EntityType.ZOMBIE.create(level);
-                if (mob==null) continue;
-            }
+            Mob mob = entity instanceof Mob candidate ? candidate : EntityType.ZOMBIE.create(level);
+            if (mob == null) continue;
             int dx=boss?0:(n%3-1)*2;
             int dz=boss?0:((n/3)%3-1)*2;
             mob.moveTo(center.getX()+dx+0.5D,center.getY()+1D,
