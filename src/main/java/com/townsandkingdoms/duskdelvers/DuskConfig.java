@@ -15,6 +15,17 @@ public final class DuskConfig {
     public static final ModConfigSpec.IntValue EXTRACTION_GRACE_MINUTES;
     public static final List<ModConfigSpec.IntValue> TIER_MINUTES;
 
+    public static final ModConfigSpec.IntValue DAILY_RUNS;
+    public static final ModConfigSpec.IntValue MAX_PARTY_SIZE;
+    public static final ModConfigSpec.IntValue PARTY_RADIUS;
+    public static final ModConfigSpec.BooleanValue KEEP_INVENTORY;
+    public static final ModConfigSpec.BooleanValue KEEP_EXPERIENCE;
+    public static final ModConfigSpec.BooleanValue FTB_TEAMS;
+    public static final ModConfigSpec.BooleanValue TNK_LOOT;
+    public static final ModConfigSpec.BooleanValue OPTIONAL_MOBS;
+    public static final ModConfigSpec.BooleanValue AFFIX_BOSS_REWARDS;
+    public static final ModConfigSpec.IntValue UNIDENTIFIED_REWARDS;
+
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Duskdelvers settings for this server").push("expeditions");
@@ -49,6 +60,35 @@ public final class DuskConfig {
         EXTRACTION_GRACE_MINUTES = builder.comment(
                 "Minimum time remaining after defeating the final guardian, giving players time to claim loot.")
                 .defineInRange("extractionGraceMinutes", 3, 0, 30);
+        builder.pop();
+        builder.comment("Limited attempts are counted per player using UTC calendar days. Zero disables the limit.")
+                .push("entryLimits");
+        DAILY_RUNS = builder.comment("Maximum new expedition entries per player per UTC day. All party members spend one entry.")
+                .defineInRange("entriesPerDay", 3, 0, 100);
+        MAX_PARTY_SIZE = builder.comment("Maximum players in a shared run, including the leader.")
+                .defineInRange("maxPartySize", 4, 1, 16);
+        PARTY_RADIUS = builder.comment("Party members must be this close to the leader to enter together.")
+                .defineInRange("gatherRadius", 16, 4, 64);
+        FTB_TEAMS = builder.comment("Enable opt-in grouping through FTB Teams when installed.")
+                .define("ftbTeams", true);
+        builder.pop();
+        builder.comment("Protection on deaths occurring in the Chaos Caverns; never changes overworld gamerules.")
+                .push("deathProtection");
+        KEEP_INVENTORY = builder.comment("Restore the vanilla inventory after death in the Chaos Caverns.")
+                .define("keepInventory", true);
+        KEEP_EXPERIENCE = builder.comment("Keep all vanilla experience on Chaos Caverns death.")
+                .define("keepExperience", true);
+        builder.pop();
+        builder.comment("All integrations are optional, disabled automatically if their mods are missing.")
+                .push("compatibility");
+        TNK_LOOT = builder.comment("Create TNK Loot unidentified items on dungeon boss completion.")
+                .define("tnkLoot", true);
+        OPTIONAL_MOBS = builder.comment("Enable safe registry-validated modded mob pools.")
+                .define("optionalCreaturePools", true);
+        AFFIX_BOSS_REWARDS = builder.comment("Allow Apotheosis to provide its native affix gear through TNK Loot.")
+                .define("apotheosisRewards", true);
+        UNIDENTIFIED_REWARDS = builder.comment("TNK Loot unidentified tokens per eligible participant after boss victory.")
+                .defineInRange("tokensPerPlayer", 1, 0, 5);
         builder.pop();
         SPEC = builder.build();
     }
