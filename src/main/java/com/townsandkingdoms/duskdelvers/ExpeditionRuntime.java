@@ -88,7 +88,7 @@ public final class ExpeditionRuntime {
             BlockPos center=rooms.get(i);
             if(player.blockPosition().distSqr(center)>400 || !level.hasChunkAt(center))continue;
             if((run.activated()&mask)==0){
-                int spawned=spawnRoom(level,run.layout(),i);
+                int spawned=spawnRoom(level,run.layout(),i,run.members().size());
                 if(spawned==0)continue;
                 sessions.activate(run,i);
                 for(ServerPlayer member:sessions.onlineMembers(player.getServer(),run))
@@ -128,12 +128,12 @@ public final class ExpeditionRuntime {
         }
     }
 
-    private static int spawnRoom(ServerLevel level,ExpeditionLayout layout,int roomIndex) {
+    private static int spawnRoom(ServerLevel level,ExpeditionLayout layout,int roomIndex,int partySize) {
         BlockPos center=layout.rooms().get(roomIndex);
         boolean boss=roomIndex==layout.rooms().size()-1;
         int tier=layout.tier();
         Random rng=new Random(level.getSeed() ^ ((long)layout.id()*97161283L) ^ roomIndex);
-        int count=boss?1:Math.min(DuskConfig.MAX_ROOM_ENEMIES.get(),2+tier+(roomIndex%2));
+        int count=boss?1:Math.min(DuskConfig.MAX_ROOM_ENEMIES.get(),2+tier+(roomIndex%2)+Math.max(0,partySize-1)*2);
         int spawned=0;
         for (int n=0;n<count;n++) {
             EntityType<?> type=boss?(tier>=3 ? EntityType.RAVAGER : EntityType.WITHER_SKELETON)
@@ -165,7 +165,7 @@ public final class ExpeditionRuntime {
                 mob.setCustomNameVisible(true);
             }
             if (DuskConfig.MOB_SCALING.get()) {
-                double factor=1.0+0.35*(tier-1);
+                double factor=(1.0+0.35*(tier-1))*(1.0+0.22*Math.max(0,partySize-1));
                 if (boss) factor*=2.5;
                 else if (n==0 && tier>=3 && roomIndex%2==0) factor*=1.5;
                 AttributeInstance hp=mob.getAttribute(Attributes.MAX_HEALTH);
@@ -174,7 +174,7 @@ public final class ExpeditionRuntime {
                     mob.setHealth(mob.getMaxHealth());
                 }
                 AttributeInstance damage=mob.getAttribute(Attributes.ATTACK_DAMAGE);
-                if (damage!=null) damage.setBaseValue(Math.min(35,damage.getBaseValue()*(1+0.2*(tier-1))));
+                if (damage!=null) damage.setBaseValue(Math.min(35,damage.getBaseValue()*(1+0.2*(tier-1))*(1+0.08*Math.max(0,partySize-1))));
             }
             if(level.addFreshEntity(mob))spawned++;
         }
