@@ -1,6 +1,8 @@
 package com.townsandkingdoms.duskdelvers;
 
 import net.minecraft.world.item.CreativeModeTabs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.minecraft.world.item.Item;
@@ -16,6 +18,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @Mod(Duskdelvers.MOD_ID)
 public final class Duskdelvers {
     public static final String MOD_ID = "duskdelvers";
+    public static final Logger LOG = LoggerFactory.getLogger("Duskdelvers");
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
     private static final DeferredBlock<GatewayBlock> RETURN_GATEWAY = makeGateway("return_gateway", 0);
@@ -53,6 +56,11 @@ public final class Duskdelvers {
         NeoForge.EVENT_BUS.addListener(DuskCommands::register);
         NeoForge.EVENT_BUS.addListener(ExpeditionRuntime::tick);
         NeoForge.EVENT_BUS.addListener(ExpeditionRuntime::clonePlayer);
+        NeoForge.EVENT_BUS.addListener(CavernsDeathProtection::onDeath);
+        NeoForge.EVENT_BUS.addListener(CavernsDeathProtection::onDrops);
+        NeoForge.EVENT_BUS.addListener(CavernsDeathProtection::onXp);
+        NeoForge.EVENT_BUS.addListener(CavernsDeathProtection::onClone);
+        NeoForge.EVENT_BUS.addListener(CavernsDeathProtection::onLogout);
         NeoForge.EVENT_BUS.addListener(EncounterProfiles::registerReload);
     }
 
