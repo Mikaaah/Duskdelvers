@@ -1,0 +1,39 @@
+{
+  "entries": [
+    {
+      "entity": "twilightforest:hedge_spider",
+      "min_tier": 1,
+      "max_tier": 3,
+      "weight": 14,
+      "requires_mod": "twilightforest"
+    },
+    {
+      "entity": "twilightforest:skeleton_druid",
+      "min_tier": 2,
+      "max_tier": 4,
+      "weight": 13,
+      "requires_mod": "twilightforest"
+    },
+    {
+      "entity": "twilightforest:death_tome",
+      "min_tier": 2,
+      "max_tier": 5,
+      "weight": 9,
+      "requires_mod": "twilightforest"
+    },
+    {
+      "entity": "twilightforest:maze_slime",
+      "min_tier": 2,
+      "max_tier": 4,
+      "weight": 9,
+      "requires_mod": "twilightforest"
+    },
+    {
+      "entity": "twilightforest:helmet_crab",
+      "min_tier": 1,
+      "max_tier": 4,
+      "weight": 12,
+      "requires_mod": "twilightforest"
+    }
+  ]
+}

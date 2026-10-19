@@ -52,7 +52,8 @@ public final class EncounterProfiles extends SimpleJsonResourceReloadListener {
                 try {
                     JsonObject obj=entry.getAsJsonObject();
                     String required=obj.has("requires_mod") ? obj.get("requires_mod").getAsString() : "";
-                    if (!required.isBlank() && !ModList.get().isLoaded(required)) continue;
+                    if (!required.isBlank() && (!DuskConfig.OPTIONAL_MOBS.get() ||
+                            !DuskConfig.modAllowed(required))) continue;
                     ResourceLocation id=ResourceLocation.parse(obj.get("entity").getAsString());
                     if (!BuiltInRegistries.ENTITY_TYPE.containsKey(id)) continue;
                     EntityType<?> entity=BuiltInRegistries.ENTITY_TYPE.get(id);

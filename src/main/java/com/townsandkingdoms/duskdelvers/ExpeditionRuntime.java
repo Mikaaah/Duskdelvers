@@ -138,7 +138,15 @@ public final class ExpeditionRuntime {
         for (int n=0;n<count;n++) {
             EntityType<?> type=boss?(tier>=3 ? EntityType.RAVAGER : EntityType.WITHER_SKELETON)
                     : EncounterProfiles.pick(tier,rng);
-            Entity entity=type.create(level);
+            // Some third-party entities assume their native dimension/arena.
+            // A broken optional constructor must never kill the expedition tick.
+            Entity entity;
+            try {
+                entity=type.create(level);
+            } catch(RuntimeException ex) {
+                Duskdelvers.LOG.warn("Skipping incompatible expedition entity {}",type,ex);
+                entity=null;
+            }
             Mob mob = entity instanceof Mob candidate ? candidate : EntityType.ZOMBIE.create(level);
             if (mob == null) continue;
             int dx=boss?0:(n%3-1)*2;

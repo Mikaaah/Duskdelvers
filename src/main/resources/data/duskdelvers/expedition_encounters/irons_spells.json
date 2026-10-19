@@ -1,0 +1,39 @@
+{
+  "entries": [
+    {
+      "entity": "irons_spellbooks:cryomancer",
+      "min_tier": 2,
+      "max_tier": 5,
+      "weight": 15,
+      "requires_mod": "irons_spellbooks"
+    },
+    {
+      "entity": "irons_spellbooks:pyromancer",
+      "min_tier": 3,
+      "max_tier": 5,
+      "weight": 14,
+      "requires_mod": "irons_spellbooks"
+    },
+    {
+      "entity": "irons_spellbooks:archevoker",
+      "min_tier": 4,
+      "max_tier": 5,
+      "weight": 8,
+      "requires_mod": "irons_spellbooks"
+    },
+    {
+      "entity": "irons_spellbooks:necromancer",
+      "min_tier": 3,
+      "max_tier": 5,
+      "weight": 12,
+      "requires_mod": "irons_spellbooks"
+    },
+    {
+      "entity": "irons_spellbooks:apothecarist",
+      "min_tier": 2,
+      "max_tier": 5,
+      "weight": 9,
+      "requires_mod": "irons_spellbooks"
+    }
+  ]
+}

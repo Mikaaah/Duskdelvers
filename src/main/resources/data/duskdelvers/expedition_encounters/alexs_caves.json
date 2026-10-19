@@ -1,0 +1,39 @@
+{
+  "entries": [
+    {
+      "entity": "alexscaves:underzealot",
+      "min_tier": 2,
+      "max_tier": 5,
+      "weight": 12,
+      "requires_mod": "alexscaves"
+    },
+    {
+      "entity": "alexscaves:watcher",
+      "min_tier": 2,
+      "max_tier": 4,
+      "weight": 9,
+      "requires_mod": "alexscaves"
+    },
+    {
+      "entity": "alexscaves:ferrouslime",
+      "min_tier": 1,
+      "max_tier": 4,
+      "weight": 13,
+      "requires_mod": "alexscaves"
+    },
+    {
+      "entity": "alexscaves:brainiac",
+      "min_tier": 3,
+      "max_tier": 5,
+      "weight": 5,
+      "requires_mod": "alexscaves"
+    },
+    {
+      "entity": "alexscaves:boundroid",
+      "min_tier": 3,
+      "max_tier": 5,
+      "weight": 6,
+      "requires_mod": "alexscaves"
+    }
+  ]
+}

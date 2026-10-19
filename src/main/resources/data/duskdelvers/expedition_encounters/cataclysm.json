@@ -1,0 +1,39 @@
+{
+  "entries": [
+    {
+      "entity": "cataclysm:koboleton",
+      "min_tier": 3,
+      "max_tier": 5,
+      "weight": 9,
+      "requires_mod": "cataclysm"
+    },
+    {
+      "entity": "cataclysm:draugr",
+      "min_tier": 3,
+      "max_tier": 5,
+      "weight": 12,
+      "requires_mod": "cataclysm"
+    },
+    {
+      "entity": "cataclysm:deepling",
+      "min_tier": 3,
+      "max_tier": 5,
+      "weight": 10,
+      "requires_mod": "cataclysm"
+    },
+    {
+      "entity": "cataclysm:deepling_brute",
+      "min_tier": 4,
+      "max_tier": 5,
+      "weight": 7,
+      "requires_mod": "cataclysm"
+    },
+    {
+      "entity": "cataclysm:deepling_priest",
+      "min_tier": 4,
+      "max_tier": 5,
+      "weight": 5,
+      "requires_mod": "cataclysm"
+    }
+  ]
+}

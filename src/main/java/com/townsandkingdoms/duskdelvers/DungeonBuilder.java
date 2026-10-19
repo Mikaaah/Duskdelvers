@@ -66,6 +66,18 @@ public final class DungeonBuilder {
                 }
             }
         }
+        // Optional Create/Ars decorative rooms; no blocks are essential for traversal.
+        if(index>0 && index%2==0){
+            Block accent = (index%4==0)
+                    ? ExpeditionCompat.findBlock("ars_nouveau","ars_nouveau:arcane_stone",
+                            Blocks.POLISHED_ANDESITE)
+                    : ExpeditionCompat.findBlock("create","create:andesite_casing",
+                            Blocks.POLISHED_ANDESITE);
+            for(int x:new int[]{-4,4}){
+                level.setBlock(center.offset(x,-1,-4),accent.defaultBlockState(),2);
+                level.setBlock(center.offset(x,-1,4),accent.defaultBlockState(),2);
+            }
+        }
         // Lit corners to ensure readability without daylight.
         for (int x:new int[]{-6,6}) {
             for (int z:new int[]{-6,6}) {
