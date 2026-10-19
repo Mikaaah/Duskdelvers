@@ -66,6 +66,7 @@ public final class Duskdelvers {
         NeoForge.EVENT_BUS.addListener(DuskCommands::register);
         NeoForge.EVENT_BUS.addListener(ExpeditionRuntime::tick);
         NeoForge.EVENT_BUS.addListener(ExpeditionRuntime::clonePlayer);
+        NeoForge.EVENT_BUS.addListener(ExpeditionRuntime::onCacheOpened);
         NeoForge.EVENT_BUS.addListener(CavernsDeathProtection::onDeath);
         NeoForge.EVENT_BUS.addListener(CavernsDeathProtection::onDrops);
         NeoForge.EVENT_BUS.addListener(CavernsDeathProtection::onXp);

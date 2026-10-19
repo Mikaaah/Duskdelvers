@@ -142,6 +142,14 @@ public final class ExpeditionSessions extends SavedData {
         setDirty();
         return true;
     }
+    /** First natural cache discovery marks the once-per-run team reward milestone. */
+    public boolean discover(Run run){
+        if(run.completed||run.expired)return false;
+        run.completed=true;
+        setDirty();
+        return true;
+    }
+
     public boolean complete(Run run){
         if(run.completed||run.expired)return false;
         run.completed=true;

@@ -85,5 +85,26 @@ public final class EncounterProfiles extends SimpleJsonResourceReloadListener {
         return EntityType.ZOMBIE;
     }
 
+    /** Only registered, enabled non-vanilla mobs are used for optional ambient encounters. */
+    public static EntityType<?> pickOptional(int tier,Random random) {
+        List<Weighted> candidates=new ArrayList<>();
+        long sum=0;
+        for(Weighted entry:pool) {
+            if(tier<entry.minTier||tier>entry.maxTier)continue;
+            ResourceLocation id=BuiltInRegistries.ENTITY_TYPE.getKey(entry.entity);
+            if(id==null||id.getNamespace().equals("minecraft"))continue;
+            if(!DuskConfig.modAllowed(id.getNamespace()))continue;
+            candidates.add(entry);
+            sum+=entry.weight;
+        }
+        if(sum<1)return null;
+        long selected=Math.floorMod(random.nextLong(),sum);
+        for(Weighted entry:candidates){
+            selected-=entry.weight;
+            if(selected<0)return entry.entity;
+        }
+        return null;
+    }
+
     public static int count() { return pool.size(); }
 }
