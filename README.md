@@ -8,6 +8,7 @@
 [![NeoForge](https://img.shields.io/badge/Loader-NeoForge-6B2C8F?style=flat-square)](https://neoforged.net/)
 [![Java](https://img.shields.io/badge/Java-21-88495E?style=flat-square)](https://adoptium.net/)
 [![Build](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml/badge.svg)](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml)
+[![Headless server smoke test](https://github.com/Mikaaah/Duskdelvers/actions/workflows/smoke.yml/badge.svg)](https://github.com/Mikaaah/Duskdelvers/actions/workflows/smoke.yml)
 [![Version](https://img.shields.io/badge/Version-0.2.0-B327CF?style=flat-square)](CHANGELOG.md)
 
 </div>
