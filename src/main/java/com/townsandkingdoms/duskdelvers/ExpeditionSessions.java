@@ -146,6 +146,8 @@ public final class ExpeditionSessions extends SavedData {
     public boolean discover(Run run){
         if(run.completed||run.expired)return false;
         run.completed=true;
+        if(run.seconds>=0)
+            run.seconds=Math.max(run.seconds,DuskConfig.EXTRACTION_GRACE_MINUTES.get()*60);
         setDirty();
         return true;
     }

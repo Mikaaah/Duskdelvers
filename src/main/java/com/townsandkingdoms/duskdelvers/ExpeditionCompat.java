@@ -40,11 +40,11 @@ public final class ExpeditionCompat {
                 " | Absent: "+String.join(", ",absent);
     }
 
-    /** Called after the shared session's first successful boss completion. */
+    /** Called once per player when their expedition team discovers its first natural cache. */
     public static boolean reward(ServerPlayer player,ExpeditionSessions.Run run){
         if(!run.member(player.getUUID()))return true;
         // Always publish a stable event for other addon mods to subscribe to.
-        NeoForge.EVENT_BUS.post(new ExpeditionCompletedEvent(player,run.id(),run.tier()));
+        NeoForge.EVENT_BUS.post(new CavernCacheDiscoveredEvent(player,run.id(),run.tier()));
         if(DuskConfig.TNK_LOOT.get()&&DuskConfig.modAllowed("tnkloot")){
             addTnkLootTokens(player,run.tier());
         }
@@ -104,7 +104,7 @@ public final class ExpeditionCompat {
             for(int i=0;i<count;i++){
                 Object category=available.get(player.getRandom().nextInt(available.size()));
                 Object result=create.invoke(null,category,rank,
-                        "duskdelvers:guardian","expedition_tier_"+dungeonTier);
+                        "duskdelvers:cavern_cache","expedition_tier_"+dungeonTier);
                 if(result instanceof ItemStack stack&&!stack.isEmpty()){
                     player.getInventory().add(stack);
                     if(!stack.isEmpty())player.drop(stack,false);
@@ -127,11 +127,11 @@ public final class ExpeditionCompat {
      * Addons can listen to this event on NeoForge.EVENT_BUS without Duskdelvers
      * depending on FTB, Apotheosis or any specific encounter provider.
      */
-    public static final class ExpeditionCompletedEvent extends Event {
+    public static final class CavernCacheDiscoveredEvent extends Event {
         private final ServerPlayer player;
         private final int runId;
         private final int tier;
-        public ExpeditionCompletedEvent(ServerPlayer player,int runId,int tier){
+        public CavernCacheDiscoveredEvent(ServerPlayer player,int runId,int tier){
             this.player=player;this.runId=runId;this.tier=tier;
         }
         public ServerPlayer player(){return player;}

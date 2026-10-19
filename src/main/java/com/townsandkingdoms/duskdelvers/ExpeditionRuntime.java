@@ -122,7 +122,7 @@ public final class ExpeditionRuntime {
         long present=level.getEntitiesOfClass(Mob.class,
                 player.getBoundingBox().inflate(32,16,32),
                 m->m.getPersistentData().getBoolean(SPAWNED)).size();
-        if(present>=6)return;
+        if(present>=DuskConfig.MAX_OPTIONAL_MOBS.get())return;
 
         EntityType<?> type=EncounterProfiles.pickOptional(danger,new Random(rng.nextLong()));
         if(type==null)return;

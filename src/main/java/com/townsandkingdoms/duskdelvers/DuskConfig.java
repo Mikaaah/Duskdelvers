@@ -5,10 +5,9 @@ import java.util.List;
 
 public final class DuskConfig {
     public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.IntValue MAX_ROOM_ENEMIES;
+    public static final ModConfigSpec.IntValue MAX_OPTIONAL_MOBS;
     public static final ModConfigSpec.BooleanValue EXPEDITIONS_ENABLED;
     public static final ModConfigSpec.BooleanValue MOB_SCALING;
-    public static final ModConfigSpec.BooleanValue BOSS_REWARDS;
     public static final ModConfigSpec.BooleanValue TIMERS_ENABLED;
     public static final ModConfigSpec.BooleanValue DISPLAY_TIMER;
     public static final ModConfigSpec.IntValue OUTPOST_MINUTES;
@@ -41,12 +40,10 @@ public final class DuskConfig {
         builder.comment("Duskdelvers settings for this server").push("expeditions");
         EXPEDITIONS_ENABLED = builder.comment("Enable generated expeditions.")
                 .define("enabled", true);
-        MAX_ROOM_ENEMIES = builder.comment("Hard cap on spawned enemies per room.")
-                .defineInRange("maxRoomEnemies", 12, 1, 30);
+        MAX_OPTIONAL_MOBS = builder.comment("Maximum ambient optional-mod creatures near one player in the caves.")
+                .defineInRange("maxOptionalMobs", 6, 0, 24);
         MOB_SCALING = builder.comment("Scale mob attributes with expedition tier.")
                 .define("scaleMobAttributes", true);
-        BOSS_REWARDS = builder.comment("Generate a reward chest after a boss is defeated.")
-                .define("bossRewards", true);
         builder.pop();
         builder.comment("Per-player time limits inside the Chaos Caverns. Time only runs while online and inside the dimension.")
                 .push("timeLimits");
@@ -68,7 +65,7 @@ public final class DuskConfig {
                 .defineInRange("tier5Minutes", 40, 1, 240);
         TIER_MINUTES = List.of(tier1, tier2, tier3, tier4, tier5);
         EXTRACTION_GRACE_MINUTES = builder.comment(
-                "Minimum time remaining after defeating the final guardian, giving players time to claim loot.")
+                "Minimum time remaining after first natural cache discovery, giving players time to explore.")
                 .defineInRange("extractionGraceMinutes", 3, 0, 30);
         builder.pop();
         builder.comment("Limited attempts are counted per player using UTC calendar days. Zero disables the limit.")
