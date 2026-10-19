@@ -137,6 +137,23 @@ try:
         compatibility = rcon_command("duskdelvers compat")
         assert "Detected optional mods:" in compatibility, compatibility
         print("Daily quota and optional-mod diagnostics passed.")
+        # New cave-only generation: registry lookup does not depend on any
+        # Twilight Forest or Aether installation.
+        for biome in ("mosslit_grotto", "twilight_thicket", "aether_glades",
+                      "golden_sanctuary", "chaos_rift"):
+            response = rcon_command("execute in duskdelvers:chaos_caverns run locate biome duskdelvers:" + biome)
+            if "Could not find" in response or "Unknown" in response or "invalid" in response.lower():
+                raise RuntimeError("Missing or unreachable custom cave biome " + biome + ": " + response)
+        print("Registered cave biome search passed for Tiers I-V.")
+
+        # Ensure all five natural cache tables actually load and roll.
+        for tier in range(1, 6):
+            response = rcon_command(
+                f"execute in duskdelvers:chaos_caverns run loot spawn 0 80 0 loot duskdelvers:chests/cavern_cache_tier_{tier}")
+            if "Unknown" in response or "invalid" in response.lower():
+                raise RuntimeError("Natural cave loot table missing for Tier " + str(tier) + ": " + response)
+        print("All five biome-scaled natural cache loot tables resolved.")
+
 
 
     success = True
