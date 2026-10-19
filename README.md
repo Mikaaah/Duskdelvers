@@ -9,7 +9,7 @@
 [![Java](https://img.shields.io/badge/Java-21-88495E?style=flat-square)](https://adoptium.net/)
 [![Build](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml/badge.svg)](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml)
 [![Headless server smoke test](https://github.com/Mikaaah/Duskdelvers/actions/workflows/smoke.yml/badge.svg)](https://github.com/Mikaaah/Duskdelvers/actions/workflows/smoke.yml)
-[![Version](https://img.shields.io/badge/Version-0.2.2-B327CF?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-0.3.0-alpha-B327CF?style=flat-square)](CHANGELOG.md)
 
 </div>
 
@@ -20,7 +20,7 @@
 - **Project links:** [Wiki](https://github.com/Mikaaah/Duskdelvers/wiki) · [Status](https://github.com/Mikaaah/Duskdelvers/wiki/Status) · [Issues](https://github.com/Mikaaah/Duskdelvers/issues) · [Towns & Kingdoms 3 on CurseForge](https://www.curseforge.com/minecraft/modpacks/towns-kingdoms-3)
 - **Planned optional integrations:** TNK Unidentified Loot ([CurseForge page pending approval](https://www.curseforge.com/minecraft/mc-mods/unidentified-loot-a-towns-kingdoms-mod)) and Resonant Arcana ([CurseForge page pending approval](https://www.curseforge.com/minecraft/mc-mods/resonant-arcana)). These are separate projects, not current Duskdelvers features.
 
-## What's included in 0.2.2
+## What's included in 0.3.0-alpha
 
 | System | Feature |
 | --- | --- |
@@ -31,12 +31,16 @@
 | **Rewards** | Interior treasure caches, a guardian reward chest and completion XP |
 | **Player-built portals** | Five 4×5 gateway frames, each leading to its own expedition tier |
 | **Return / extraction gates** | Portal at dungeon entrance and after guardian defeat |
-| **Timed expeditions** | Per-player countdown, tier-specific limits, warning messages and automatic safe extraction |
+| **Timed expeditions** | Shared countdown for teams, tier-specific limits, warnings and extraction |
+| **Shared expeditions** | Native parties or opted-in FTB Teams; single room-state and boss per group |
+| **Daily entry quotas** | 3 per UTC day by default for every participant, configurable |
+| **Dimension keep inventory** | Preserve vanilla inventory/XP on death inside Chaos Caverns without global gamerules |
+| **Optional integrations** | TNK Loot tokens, FTB Quests, Puffish Skills, modded encounters and decorative blocks |
 | **Delver's Compass** | Portal activation plus optional shortcut to enter/exit |
 | **Commands** | Start at any tier, inspect status, visit the old outpost and leave |
 | **Configuration** | Optional mob scaling, encounter caps and guardian reward toggle |
 
-> **0.2.2 is a playable test build, not a finished content release.** The guardian uses a scaled vanilla creature, and dungeon rooms are generated on demand rather than placed by natural jigsaw world generation. Deep compatibility adapters and multiplayer instance resets are not included yet.
+> **0.3.0-alpha is a playable test build, not a finished content release.** The guardian uses a scaled vanilla creature, and dungeon rooms are generated on demand rather than placed by natural jigsaw world generation. Deep compatibility adapters and multiplayer instance resets are not included yet.
 
 ## Get started
 
@@ -46,7 +50,8 @@
 4. Craft a **Delver's Compass** (iron ingots, vanilla compass and amethyst shard) or `/give @s duskdelvers:delvers_compass`.
 5. Build a 4×5 matching frame (2×3 empty opening) from the blocks listed in the [portal guide](docs/PORTALS.md). Right-click its frame with your compass to activate it, then walk inside.
 6. Alternatively, outside the dimension **sneak-right-click** the compass to cycle tiers and **right-click in the air** to start immediately.
-7. Defeat encounters before the time expires; after clearing the guardian, use the extraction gateway to return. Expiring returns you automatically without losing inventory.
+7. For team runs, invite friends using `/duskdelvers team invite <player>`, ask them to `/duskdelvers team accept`, and gather within 16 blocks. FTB teammates can opt in with `/duskdelvers team ready`.
+8. Defeat encounters before the time expires; after clearing the guardian, use the extraction gateway to return. Expiring returns you automatically without losing inventory.
 
 ### Useful commands
 
@@ -56,7 +61,11 @@
 | `/duskdelvers enter` | Open the fixed 0.1.0 test outpost |
 | `/duskdelvers status` | Show active run and encounter pool information |
 | `/duskdelvers exit` | Return to your saved origin |
-| `/duskdelvers time` | Show your remaining time |
+| `/duskdelvers entries` | Your remaining daily entries |
+| `/duskdelvers team status` | Check your expedition party |
+| `/duskdelvers daily` | Show shared expedition quota settings |
+| `/duskdelvers compat` | Show detected optional mods |
+| `/duskdelvers time` | Show your remaining time in the arrival outpost |
 | `/duskdelvers limits` | View the configured time limits |
 
 Commands require cheats/operator access as dictated by the game/server command setup.
@@ -84,7 +93,7 @@ Build with **Java 21** and **Gradle 9.2.1**:
 gradle clean build --no-daemon
 ~~~
 
-[Portal construction](docs/PORTALS.md) · [Time limits](docs/TIME_LIMITS.md) · [Roadmap](docs/ROADMAP.md) · [Architecture](docs/ARCHITECTURE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Branding](docs/BRANDING.md) · [Changelog](CHANGELOG.md)
+[Team expeditions](docs/TEAM_EXPEDITIONS.md) · [Optional compatibility](docs/COMPATIBILITY.md) · [Portal construction](docs/PORTALS.md) · [Time limits](docs/TIME_LIMITS.md) · [Roadmap](docs/ROADMAP.md) · [Architecture](docs/ARCHITECTURE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Branding](docs/BRANDING.md) · [Changelog](CHANGELOG.md)
 
 ## License
 

@@ -27,7 +27,18 @@
 - [x] In-game time and server time-limits commands.
 - [ ] Verify client HUD and real multiplayer expiry behavior during gameplay.
 
-## 0.3.x — Caverns & dungeon expansion
+## 0.3.0-alpha — Team expeditions and optional mod content
+- [x] Dimension-only vanilla inventory/XP retention upon death.
+- [x] Persistent daily personal entry limits.
+- [x] Native parties and opt-in FTB Teams matchmaking.
+- [x] Shared SavedData sessions, countdowns and encounter progress.
+- [x] Server reward claims, TNK Loot reward API, optional FTB Quest and Puffish XP command bridging.
+- [x] Conditional mob pools for Iron's Spells, Alex's Caves, Cataclysm, Aether and Twilight Forest.
+- [x] Create/Ars optional room accents.
+- [ ] Full TNK3 modpack player tests and vendor API edge cases.
+- [ ] Boss-native AI/Epic Fight patches, bespoke battle arenas and interactive mechanics.
+
+## 0.4.x — Caverns & dungeon expansion
 - [ ] True natural jigsaw structure generation, new modular rooms and custom dungeon features.
 - [ ] Custom cave biomes and fluid/terrain polishing.
 - [ ] Special puzzles, traps, discoveries, minimap/journal.

@@ -1,4 +1,4 @@
-# Architecture — 0.2.2
+# Architecture — 0.3.0-alpha
 
 The Chaos Caverns is a bundled noise-based cave dimension. Its three biome regions use vanilla cave biome definitions. True custom cavern biomes and native worldgen jigsaw structures are planned.
 
@@ -21,3 +21,15 @@ The Chaos Caverns is a bundled noise-based cave dimension. Its three biome regio
 - Bosses currently use vanilla mob entities with stronger attributes, not custom models and animations.
 - The generic JSON pool is not full API integration with TNK Loot or other third-party mods.
 - No claim of in-game client/server validation until tests are performed.
+
+## New shared-sessions architecture
+
+- `ExpeditionQuota`: world-persistent per-player UTC-day run limits, charged atomically for all team members after successful dungeon generation.
+- `ExpeditionParty`: transient invitations, accepted native parties, optional mutual opt-in FTB team ID resolution, radius and party cap validation.
+- `ExpeditionSessions`: world-persistent party membership, one room state, one timer, boss completion and per-member reward claim ledger. The tick director processes rooms once regardless of players.
+- `CavernsDeathProtection`: death-time inventory/experience snapshot, dimension-only drop suppression and respawn restore. Never changes global gamerules.
+- `ExpeditionCompat`: runtime-checked TNK Loot token generation, FTB Quests completion, Puffish category XP commands, provider registry checks, and NeoForge completion events.
+- `DungeonBuilder`: optional Create/Ars room detail accents resolved against installed block registries.
+- `EncounterProfiles`: provider-conditional mob entries validated during reload. Incompatible mob constructors fall back to vanilla mobs.
+
+Current cave layout and dungeon architecture remains the fixed-size prototype. The session/party layer is not yet a true separate dimension instance or safe reset manager.
