@@ -23,7 +23,6 @@ public final class DuskConfig {
     public static final ModConfigSpec.BooleanValue FTB_TEAMS;
     public static final ModConfigSpec.BooleanValue TNK_LOOT;
     public static final ModConfigSpec.BooleanValue OPTIONAL_MOBS;
-    public static final ModConfigSpec.BooleanValue AFFIX_BOSS_REWARDS;
     public static final ModConfigSpec.IntValue UNIDENTIFIED_REWARDS;
 
     public static final List<ModConfigSpec.ConfigValue<String>> FTB_QUEST_IDS;
@@ -96,8 +95,6 @@ public final class DuskConfig {
                 .define("tnkLoot", true);
         OPTIONAL_MOBS = builder.comment("Enable safe registry-validated modded mob pools.")
                 .define("optionalCreaturePools", true);
-        AFFIX_BOSS_REWARDS = builder.comment("Allow Apotheosis to provide its native affix gear through TNK Loot.")
-                .define("apotheosisRewards", true);
         UNIDENTIFIED_REWARDS = builder.comment("TNK Loot unidentified tokens per eligible participant after boss victory.")
                 .defineInRange("tokensPerPlayer", 1, 0, 5);
         builder.pop();

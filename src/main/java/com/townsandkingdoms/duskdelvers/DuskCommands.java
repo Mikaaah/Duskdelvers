@@ -49,6 +49,8 @@ public final class DuskCommands {
                     .then(Commands.literal("ready").executes(ctx -> teamReady(ctx.getSource())))
                     .then(Commands.literal("status").executes(ctx -> teamStatus(ctx.getSource()))))
                 .then(Commands.literal("entries").executes(ctx -> entries(ctx.getSource())))
+                .then(Commands.literal("compat").executes(ctx -> compat(ctx.getSource())))
+                .then(Commands.literal("daily").executes(ctx -> daily(ctx.getSource())))
                 .then(Commands.literal("exit").executes(ctx -> exit(ctx.getSource())))
                 .then(Commands.literal("time").executes(ctx -> time(ctx.getSource())))
                 .then(Commands.literal("limits").executes(ctx -> limits(ctx.getSource())))
@@ -245,6 +247,21 @@ public final class DuskCommands {
         player.sendSystemMessage(Component.literal(ExpeditionParty.status(player)));
         return 1;
     }
+    private static int compat(CommandSourceStack source) {
+        source.sendSuccess(() -> Component.literal(ExpeditionCompat.status()),false);
+        return 1;
+    }
+
+    private static int daily(CommandSourceStack source) {
+        source.sendSuccess(() -> Component.literal(
+                "Duskdelvers daily expedition entries per player: "+
+                (DuskConfig.DAILY_RUNS.get()==0?"unlimited":DuskConfig.DAILY_RUNS.get())+
+                " • Maximum team size: "+DuskConfig.MAX_PARTY_SIZE.get()+
+                " • Maximum gathering radius: "+DuskConfig.PARTY_RADIUS.get()+" blocks "+
+                " • UTC midnight reset"),false);
+        return 1;
+    }
+
     private static int entries(CommandSourceStack source) throws CommandSyntaxException {
         ServerPlayer player=source.getPlayerOrException();
         player.sendSystemMessage(Component.literal("Duskdelvers • "+ExpeditionQuota.get(player.getServer()).status(player)));

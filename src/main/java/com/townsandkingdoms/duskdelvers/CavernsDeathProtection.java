@@ -30,7 +30,7 @@ public final class CavernsDeathProtection {
 
     public static void onDeath(LivingDeathEvent event) {
         if(!(event.getEntity() instanceof ServerPlayer player)||!inside(player)||
-                !DuskConfig.KEEP_INVENTORY.get())return;
+                !(DuskConfig.KEEP_INVENTORY.get()||DuskConfig.KEEP_EXPERIENCE.get()))return;
         var inv=player.getInventory();
         PENDING.put(player.getUUID(),new Snapshot(copy(inv.items),copy(inv.armor),
                 copy(inv.offhand),player.experienceLevel,player.totalExperience,player.experienceProgress));
@@ -61,13 +61,15 @@ public final class CavernsDeathProtection {
                 !(event.getOriginal() instanceof ServerPlayer original))return;
         if(!original.serverLevel().dimension().equals(DuskCommands.CHAOS_CAVERNS))return;
         Snapshot snapshot=PENDING.remove(original.getUUID());
-        if(snapshot!=null&&DuskConfig.KEEP_INVENTORY.get()){
-            var inv=next.getInventory();
-            restore(inv.items,snapshot.main());
-            restore(inv.armor,snapshot.armor());
-            restore(inv.offhand,snapshot.offhand());
-            inv.setChanged();
-            if(DuskConfig.KEEP_EXPERIENCE.get()){
+        if(snapshot!=null) {
+            if(DuskConfig.KEEP_INVENTORY.get()) {
+                var inv=next.getInventory();
+                restore(inv.items,snapshot.main());
+                restore(inv.armor,snapshot.armor());
+                restore(inv.offhand,snapshot.offhand());
+                inv.setChanged();
+            }
+            if(DuskConfig.KEEP_EXPERIENCE.get()) {
                 next.experienceLevel=snapshot.experienceLevel();
                 next.totalExperience=snapshot.totalExperience();
                 next.experienceProgress=snapshot.progress();
