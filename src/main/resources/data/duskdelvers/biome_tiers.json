@@ -1,0 +1,21 @@
+{
+  "description": "Difficulty tiers for biome-themed expeditions",
+  "tiers": {
+    "limestone_hollows": 1,
+    "mosslit_grotto": 1,
+    "fungal_glades": 1,
+    "twilight_thicket": 2,
+    "dripstone_chasms": 2,
+    "glimmering_depths": 2,
+    "enchanted_grove": 3,
+    "aether_glades": 3,
+    "frostbound_caverns": 3,
+    "resonant_crystalfields": 4,
+    "golden_sanctuary": 4,
+    "ashen_abyss": 4,
+    "chaos_rift": 5,
+    "shattered_void": 5,
+    "glowing_highlands": 3,
+    "soulbound_crypts": 5
+  }
+}

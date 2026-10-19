@@ -6,38 +6,194 @@
       "type": "minecraft:multi_noise",
       "biomes": [
         {
-          "biome": "minecraft:dripstone_caves",
+          "biome": "duskdelvers:limestone_hollows",
           "parameters": {
             "continentalness": 0,
             "depth": 0,
             "erosion": 0,
-            "humidity": 0,
+            "humidity": -0.75,
             "offset": 0,
-            "temperature": 0,
+            "temperature": -0.75,
             "weirdness": 0
           }
         },
         {
-          "biome": "minecraft:lush_caves",
+          "biome": "duskdelvers:mosslit_grotto",
           "parameters": {
             "continentalness": 0,
             "depth": 0,
             "erosion": 0,
-            "humidity": 0.4,
+            "humidity": -0.25,
+            "offset": 0,
+            "temperature": -0.75,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:fungal_glades",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.25,
+            "offset": 0,
+            "temperature": -0.75,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:twilight_thicket",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.75,
+            "offset": 0,
+            "temperature": -0.75,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:dripstone_chasms",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -0.75,
+            "offset": 0,
+            "temperature": -0.25,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:glimmering_depths",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -0.25,
+            "offset": 0,
+            "temperature": -0.25,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:enchanted_grove",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.25,
+            "offset": 0,
+            "temperature": -0.25,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:aether_glades",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.75,
+            "offset": 0,
+            "temperature": -0.25,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:frostbound_caverns",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -0.75,
+            "offset": 0,
+            "temperature": 0.25,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:resonant_crystalfields",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -0.25,
+            "offset": 0,
+            "temperature": 0.25,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:golden_sanctuary",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.25,
+            "offset": 0,
+            "temperature": 0.25,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:ashen_abyss",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.75,
+            "offset": 0,
+            "temperature": 0.25,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:chaos_rift",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -0.75,
             "offset": 0,
             "temperature": 0.75,
             "weirdness": 0
           }
         },
         {
-          "biome": "minecraft:deep_dark",
+          "biome": "duskdelvers:shattered_void",
           "parameters": {
             "continentalness": 0,
             "depth": 0,
             "erosion": 0,
-            "humidity": -0.4,
+            "humidity": -0.25,
             "offset": 0,
-            "temperature": -0.75,
+            "temperature": 0.75,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:glowing_highlands",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.25,
+            "offset": 0,
+            "temperature": 0.75,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "duskdelvers:soulbound_crypts",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.75,
+            "offset": 0,
+            "temperature": 0.75,
             "weirdness": 0
           }
         }
