@@ -62,6 +62,59 @@ try:
         print("Dimension command response:", response)
         if response[0] == -1 or "Unknown dimension" in response[2] or "Unknown" in response[2]:
             raise RuntimeError("Chaos Caverns failed command dimension validation")
+
+        # Verify all five player-built portals and both horizontal orientations.
+        frames = {
+            1: "mossy_stone_bricks",
+            2: "prismarine_bricks",
+            3: "amethyst_block",
+            4: "polished_blackstone_bricks",
+            5: "crying_obsidian",
+        }
+        command_id = 100
+
+        def rcon_command(command):
+            nonlocal_command = command  # Keep the command visible in failure diagnostics.
+            global command_id
+            command_id += 1
+            send_packet(sock, command_id, 2, nonlocal_command)
+            ident, typ, answer = recv_packet(sock)
+            if ident != command_id:
+                raise RuntimeError(f"RCON unexpected response id for {command}: {ident}")
+            print(f"RCON: {command} => {answer.strip()}")
+            return answer
+
+        for tier, frame in frames.items():
+            horizontal_x = tier % 2 == 1
+            bx, by, bz = 24 + tier * 12, 85, 24
+            coords = lambda u, v: (bx + u, by + v, bz) if horizontal_x else (bx, by + v, bz + u)
+            def at(u, v):
+                return " ".join(map(str, coords(u, v)))
+            def place(u, v, block):
+                return f"execute in minecraft:overworld run setblock {at(u,v)} minecraft:{block}"
+            for u in range(4):
+                for v in range(5):
+                    block = frame if (u in (0,3) or v in (0,4)) else "air"
+                    rcon_command(place(u,v,block))
+            result = rcon_command(
+                f"execute in minecraft:overworld run duskdelvers portal activate {at(0,0)}")
+            if "Expedition portal activated." not in result:
+                raise RuntimeError(f"Tier {tier} portal failed activation: {result}")
+            portal = f"duskdelvers:tier_{tier}_portal"
+            result = rcon_command(
+                f"execute in minecraft:overworld if block {at(1,1)} {portal} run say GATEWAY_{tier}_ACTIVE")
+            if f"GATEWAY_{tier}_ACTIVE" not in result:
+                raise RuntimeError(f"Tier {tier} portal interior wasn't created: {result}")
+
+            # Breaking a frame side must invalidate all linked interior blocks.
+            rcon_command(place(0,2,"air"))
+            result = rcon_command(
+                f"execute in minecraft:overworld if block {at(1,2)} minecraft:air run say GATEWAY_{tier}_CLEARED")
+            if f"GATEWAY_{tier}_CLEARED" not in result:
+                raise RuntimeError(f"Tier {tier} portal didn't extinguish on frame break: {result}")
+
+        print("All five portals passed activation, orientation and frame-break tests.")
+
     success = True
 finally:
     if proc is not None and proc.poll() is None:
