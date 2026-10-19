@@ -106,7 +106,8 @@ public final class ExpeditionCompat {
                 Object result=create.invoke(null,category,rank,
                         "duskdelvers:guardian","expedition_tier_"+dungeonTier);
                 if(result instanceof ItemStack stack&&!stack.isEmpty()){
-                    if(!player.getInventory().add(stack))player.drop(stack,false);
+                    player.getInventory().add(stack);
+                    if(!stack.isEmpty())player.drop(stack,false);
                 }
             }
             player.sendSystemMessage(Component.literal(
