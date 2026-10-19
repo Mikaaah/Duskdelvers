@@ -1,35 +1,41 @@
-# Architecture — 0.3.0-alpha
+# Architecture — Duskdelvers 0.4.0
 
-The Chaos Caverns is a bundled noise-based cave dimension. Its three biome regions use vanilla cave biome definitions. True custom cavern biomes and native worldgen jigsaw structures are planned.
+## Terrain and biome source
 
-**Expeditions:** `ExpeditionIndex` allocates a unique, monotonic run ID in overworld SavedData. `ExpeditionLayout` creates a seeded connected route on a 4×4 grid. `DungeonBuilder` constructs safe stone chambers, corridors and loot caches in a reserved region, entirely server-side.
+- Custom datapack noise-based dimension: \`duskdelvers:chaos_caverns\`.
+- The previous **huge-cave \`noise_router.final_density\` is unchanged**.
+- Multi-noise biome source expanded from 3 vanilla cave biomes to 16 custom Duskdelvers cave biomes.
+- Temperature/vegetation sampling runs at \`xz_scale=0.82\` vs \`0.25\` previously; this reduces average climate region scale without altering cavern dimensions.
+- Biome-specific surface rules and natural floor accents; two worldgen Feature types: \`cavern_cache\` and \`cavern_accent\`.
+- Natural caches use lazy Minecraft chest loot tables, assigned from the local biome danger.
+- No structure registries, jigsaw pieces, artificial dungeon rooms or boss arenas.
 
-**Combat:** `ExpeditionRuntime` activates rooms based on nearby player position every 20 ticks. Enemies are tagged with run/room IDs so ambient mobs do not count toward encounter completion. The boss reward chest appears when the final encounter clears.
+## Expedition sessions
 
-**Content:** `EncounterProfiles` reloads external datapack JSON, validates installed mods and entity registry IDs, and chooses weighted enemies by tier. `DuskConfig` exposes per-world server settings.
+- \`ExpeditionLayout\` retains a compact, saved one-position **arrival anchor** so older saved session formats can still be parsed. It **does not** assemble dungeon rooms.
+- \`CavernArrival\` samples a bounded number of cave columns and selects a safe naturally carved floor, preferring the gateway's tier; only creates a tiny air pocket as a rare safety fallback.
+- \`ExpeditionIndex\`: durable monotonic run IDs; spawn areas are widely separated so teams generally begin independently.
+- \`ExpeditionQuota\`: 3 per UTC day by default, charged once per entering team member.
+- \`ExpeditionParty\`: optional FTB Teams resolving plus native invitations.
+- \`ExpeditionSessions\`: player membership, one countdown, discovery marker and per-member reward claims; all persisted using SavedData.
 
-**Portals:** `PortalFrames` finds complete 4×5 frames made of a specific vanilla block, fills their 2×3 interiors with tier-specific `GatewayBlock` states, validates frame integrity and creates return gateways. `GatewayBlock` handles server-authoritative walk-through travel with cooldowns. Entry/exit share the existing `DuskCommands` destination logic; an operator-only command supports test automation.
+## Biome encounters and world rewards
 
-**Timer:** `ExpeditionTimer` counts one second per 20 active player ticks while the player is in Chaos Caverns, persists its state in player NBT, sends action-bar and chat warnings, and uses the common `DuskCommands.returnPlayer` extraction path on expiry. `DuskConfig` controls durations and post-boss grace. Outside-dimension time and offline sessions do not consume the countdown.
+- \`CavernBiomes\`: name and danger level for all sixteen biomes.
+- \`ExpeditionRuntime\`: checks biome and time once per second per player; scales eligible vanilla mobs once, and may add infrequent optional registered cave creatures without forced chunks or boss AI overrides.
+- \`EncounterProfiles\`: datapack registry ID validation, conditional on installed optional mod IDs.
+- \`ExpeditionRuntime.onCacheOpened\`: discovers a natural worldgen cache before loot is rolled; records one shared discovery per run, grants each member a reward only once and restores a three-minute minimum looting grace.
+- \`ExpeditionCompat\`: optional TNK Loot tokens, FTB Quests and Puffish Skills milestones, guarded by real loaded-mod tests and configurable IDs. Emit \`CavernCacheDiscoveredEvent\` on first discovery per eligible player.
+- \`CavernsDeathProtection\`: vanilla inventory/experience recovery on dimension deaths only.
 
-**Travel:** `DelversCompass` starts a run or returns to the saved external origin. `DuskCommands` offers equivalent commands and preserves the 0.1 starter outpost.
+## Performance limits
 
-## Known limitations
-- One player owns each run. No secure co-op party ownership/claim system.
-- No automatic chunk cleanup/reset. Old regions persist.
-- Some foreign modded entities require their native environment or bespoke AI. They must be tested before adding to loot/encounter pools.
-- Bosses currently use vanilla mob entities with stronger attributes, not custom models and animations.
-- The generic JSON pool is not full API integration with TNK Loot or other third-party mods.
-- No claim of in-game client/server validation until tests are performed.
+- All world loot and accents are generated in worldgen, not endlessly scanned by a player tick or global chunk listener.
+- No indefinite forced chunks, custom dimensions per party, or old expedition region deletion.
+- Optional roaming fauna: one candidate every 30 seconds per player, capped and spawned only in already loaded chunks.
+- Biome danger updates once per second, and mobs receive biome scaling only once.
+- Original cave noise density, height, and generator sampler remain intact.
 
-## New shared-sessions architecture
+## Migration
 
-- `ExpeditionQuota`: world-persistent per-player UTC-day run limits, charged atomically for all team members after successful dungeon generation.
-- `ExpeditionParty`: transient invitations, accepted native parties, optional mutual opt-in FTB team ID resolution, radius and party cap validation.
-- `ExpeditionSessions`: world-persistent party membership, one room state, one timer, boss completion and per-member reward claim ledger. The tick director processes rooms once regardless of players.
-- `CavernsDeathProtection`: death-time inventory/experience snapshot, dimension-only drop suppression and respawn restore. Never changes global gamerules.
-- `ExpeditionCompat`: runtime-checked TNK Loot token generation, FTB Quests completion, Puffish category XP commands, provider registry checks, and NeoForge completion events.
-- `DungeonBuilder`: optional Create/Ars room detail accents resolved against installed block registries.
-- `EncounterProfiles`: provider-conditional mob entries validated during reload. Incompatible mob constructors fall back to vanilla mobs.
-
-Current cave layout and dungeon architecture remains the fixed-size prototype. The session/party layer is not yet a true separate dimension instance or safe reset manager.
+v0.4 does not automatically erase old authored rooms from existing chunks or forcibly rewrite old saves. Test in a fresh world. Back up valuable worlds before changing the dimension's biome/noise settings.

@@ -8,92 +8,84 @@
 [![NeoForge](https://img.shields.io/badge/Loader-NeoForge-6B2C8F?style=flat-square)](https://neoforged.net/)
 [![Java](https://img.shields.io/badge/Java-21-88495E?style=flat-square)](https://adoptium.net/)
 [![Build](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml/badge.svg)](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml)
-[![Headless server smoke test](https://github.com/Mikaaah/Duskdelvers/actions/workflows/smoke.yml/badge.svg)](https://github.com/Mikaaah/Duskdelvers/actions/workflows/smoke.yml)
-[![Version](https://img.shields.io/badge/Version-0.3.0-alpha-B327CF?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-0.4.0-B327CF?style=flat-square)](CHANGELOG.md)
 
 </div>
 
-# Duskdelvers
+# Duskdelvers — Explore the Chaos Caverns
 
-**Duskdelvers** is an exploration-focused Minecraft mod for **NeoForge 1.21.1**, developed for *Towns & Kingdoms 3*. Explore the **Chaos Caverns**, conquer generated dungeons, overcome increasingly dangerous encounters and collect treasure.
+**Duskdelvers** is a standalone, cave-exploration mod for Minecraft **1.21.1 / NeoForge**, created for Towns & Kingdoms. Journey through enormous connected caverns, discover short-lived biome regions with their own danger levels, find natural treasure caches, and survive your expedition before time runs out.
 
-- **Project links:** [Wiki](https://github.com/Mikaaah/Duskdelvers/wiki) · [Status](https://github.com/Mikaaah/Duskdelvers/wiki/Status) · [Issues](https://github.com/Mikaaah/Duskdelvers/issues) · [Towns & Kingdoms 3 on CurseForge](https://www.curseforge.com/minecraft/modpacks/towns-kingdoms-3)
-- **Planned optional integrations:** TNK Unidentified Loot ([CurseForge page pending approval](https://www.curseforge.com/minecraft/mc-mods/unidentified-loot-a-towns-kingdoms-mod)) and Resonant Arcana ([CurseForge page pending approval](https://www.curseforge.com/minecraft/mc-mods/resonant-arcana)). These are separate projects, not current Duskdelvers features.
+**0.4.0 completely removes the generated dungeon structures introduced in 0.2/0.3.**
 
-## What's included in 0.3.0-alpha
+## What's new?
 
-| System | Feature |
+- **16 cave biomes**, from limestone hollows and fungal grottos to Twilight-inspired thickets, Aether-inspired sanctuaries, crystalline fields and chaos rifts.
+- **Preserved enormous cave terrain.** The original cavern-shaping noise density is unchanged. Only biome climate noise scales upward (\`0.25 → 0.82\`), meaning regions change more frequently without shrinking the caves.
+- **Difficulty is determined by your current biome (Tier I–V)** instead of a sequence of artificial rooms or forced dungeon encounters.
+- **Worldgen natural treasure caches**: rare barrels on cave floors with tier-specific loot tables. No castles, box-shaped chambers, corridors, dungeon rooms, jigsaw modules, or boss vaults.
+- **Biome-specific natural rock, moss, crystal and soil patches**, plus conditional Aether Holystone and Twilight Forest blocks when available.
+- **Natural hostile mobs** with modest biome-sensitive vanilla scaling and infrequent optional modded creatures.
+- **First cache discovered** unlocks once-per-run per-player optional TNK Loot, FTB Quests and Puffish Skills milestone rewards.
+- Retains **five player-built gateways**, **daily entries**, **co-op parties**, **shared timer**, **keep-inventory within Chaos Caverns** and safe extraction.
+
+## Play a cave expedition
+
+1. Install NeoForge 21.1.x (tested against 21.1.262) and Java 21.
+2. Download the newest successful [GitHub Actions build](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml). Extract the JAR into \`mods/\`.
+3. **Use a new test world** to see all sixteen biomes and the new loot generation.
+4. Craft or obtain a Delver's Compass: \`/give @s duskdelvers:delvers_compass\`.
+5. Build a tier gateway using the [portal guide](docs/PORTALS.md), activate its frame with the compass, and enter. Right-clicking the compass in the air is an optional shortcut.
+6. Explore freely, find natural caches, move between biome difficulty levels, and return through the compass or \`/duskdelvers exit\` before the shared time limit expires.
+
+There is **no artificial boss-clear requirement**. Exploration and loot hunting are the gameplay loop.
+
+## Gameplay defaults
+
+| Setting | Default |
 | --- | --- |
-| **Chaos Caverns** | Underground dimension with dripstone, lush cave and deep-dark zones |
-| **Generated expeditions** | Per-run connected layouts of 5–9 dungeon rooms with corridors and decorated arenas |
-| **Progressive difficulty** | Five tiers with increasing room count, enemy quantity, mob attributes and treasure |
-| **Encounters** | Datapack-configurable mob pools, named elite encounters and a guardian in the final room |
-| **Rewards** | Interior treasure caches, a guardian reward chest and completion XP |
-| **Player-built portals** | Five 4×5 gateway frames, each leading to its own expedition tier |
-| **Return / extraction gates** | Portal at dungeon entrance and after guardian defeat |
-| **Timed expeditions** | Shared countdown for teams, tier-specific limits, warnings and extraction |
-| **Shared expeditions** | Native parties or opted-in FTB Teams; single room-state and boss per group |
-| **Daily entry quotas** | 3 per UTC day by default for every participant, configurable |
-| **Dimension keep inventory** | Preserve vanilla inventory/XP on death inside Chaos Caverns without global gamerules |
-| **Optional integrations** | TNK Loot tokens, FTB Quests, Puffish Skills, modded encounters and decorative blocks |
-| **Delver's Compass** | Portal activation plus optional shortcut to enter/exit |
-| **Commands** | Start at any tier, inspect status, visit the old outpost and leave |
-| **Configuration** | Optional mob scaling, encounter caps and guardian reward toggle |
+| Entrances | Five player-built gateway types, Tier I–V |
+| Biomes | 16 unique cave biomes, 5 danger levels |
+| Time | 20 / 25 / 30 / 35 / 40 minutes by gateway tier |
+| Daily attempts | 3 per player (UTC reset; configurable, 0 = unlimited) |
+| Party size | 4 nearby members, native parties or opted-in FTB Teams |
+| Death in dimension | Keep vanilla inventory and experience |
+| Loot | Naturally generated world caches, Tier I–V tables |
+| Custom structures | **None** |
+| Required content mods | **None** |
 
-> **0.3.0-alpha is a playable test build, not a finished content release.** The guardian uses a scaled vanilla creature, and dungeon rooms are generated on demand rather than placed by natural jigsaw world generation. Deep compatibility adapters and multiplayer instance resets are not included yet.
+## Commands
 
-## Get started
-
-1. Install Minecraft **1.21.1**, NeoForge **21.1.262+** within 21.1.x, and Java **21**.
-2. Download the newest successful artifact from [GitHub Actions](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml), extract it and put the JAR in `mods/`.
-3. Use a **new disposable test world**. The current version leaves old expedition regions in world saves.
-4. Craft a **Delver's Compass** (iron ingots, vanilla compass and amethyst shard) or `/give @s duskdelvers:delvers_compass`.
-5. Build a 4×5 matching frame (2×3 empty opening) from the blocks listed in the [portal guide](docs/PORTALS.md). Right-click its frame with your compass to activate it, then walk inside.
-6. Alternatively, outside the dimension **sneak-right-click** the compass to cycle tiers and **right-click in the air** to start immediately.
-7. For team runs, invite friends using `/duskdelvers team invite <player>`, ask them to `/duskdelvers team accept`, and gather within 16 blocks. FTB teammates can opt in with `/duskdelvers team ready`.
-8. Defeat encounters before the time expires; after clearing the guardian, use the extraction gateway to return. Expiring returns you automatically without losing inventory.
-
-### Useful commands
-
-| Command | Function |
+| Command | Description |
 | --- | --- |
-| `/duskdelvers start 1` through `/duskdelvers start 5` | Create a new expedition at the requested tier |
-| `/duskdelvers enter` | Open the fixed 0.1.0 test outpost |
-| `/duskdelvers status` | Show active run and encounter pool information |
-| `/duskdelvers exit` | Return to your saved origin |
-| `/duskdelvers entries` | Your remaining daily entries |
-| `/duskdelvers team status` | Check your expedition party |
-| `/duskdelvers daily` | Show shared expedition quota settings |
-| `/duskdelvers compat` | Show detected optional mods |
-| `/duskdelvers time` | Show your remaining time in the arrival outpost |
-| `/duskdelvers limits` | View the configured time limits |
+| \`/duskdelvers start 1\` through \`/duskdelvers start 5\` | Begin a cave expedition at the chosen gateway tier |
+| \`/duskdelvers enter\` | Alias for a Tier I expedition (consumes an entry) |
+| \`/duskdelvers exit\` | Return to your saved entry location |
+| \`/duskdelvers status\` | Show current biome danger, team, time and daily entries |
+| \`/duskdelvers entries\` | View your daily allowance |
+| \`/duskdelvers team invite <player>\` | Invite another player |
+| \`/duskdelvers team accept\` | Join the party |
+| \`/duskdelvers team ready\` | Opt into FTB Teams matching |
+| \`/duskdelvers compat\` | Show detected optional mods |
+| \`/duskdelvers entries reset <player>\` | Operator-only quota reset for testing |
 
-Commands require cheats/operator access as dictated by the game/server command setup.
+## Optional compatibility
 
-## Datapack-driven encounters
+Standalone operation is the default. Optional content includes **Twilight Forest, The Aether, Alex's Caves, Cataclysm, Iron's Spells, TNK Unidentified Loot, FTB Teams, FTB Quests, Puffish Skills, Create and Ars Nouveau**. Apotheosis and Epic Fight keep their native mechanics; no unverified custom combat patches are applied.
 
-Files in `data/<namespace>/expedition_encounters/*.json` can add mobs from installed mods without requiring a direct code dependency.
+**Twilight- and Aether-inspired biomes are genuine new Duskdelvers cave biomes**, not copies of the mods' original aboveground/sky biomes. Their optional native blocks and creatures are added only if the provider and IDs exist; vanilla replacements are always available. See [compatibility details](docs/COMPATIBILITY.md).
 
-~~~json
-{
-  "entries": [
-    {"entity": "minecraft:skeleton", "weight": 30, "min_tier": 1, "max_tier": 5},
-    {"entity": "examplemod:cave_beast", "weight": 10, "min_tier": 3, "max_tier": 5, "requires_mod": "examplemod"}
-  ]
-}
-~~~
+## Documentation
 
-Invalid entity IDs and missing optional mods are ignored, with vanilla fallback encounters.
+[Biome atlas](docs/BIOMES.md) · [Team expeditions](docs/TEAM_EXPEDITIONS.md) · [Portals](docs/PORTALS.md) · [Time limits](docs/TIME_LIMITS.md) · [Architecture](docs/ARCHITECTURE.md) · [Roadmap](docs/ROADMAP.md) · [Changelog](CHANGELOG.md)
 
-## Development
+## Building
 
-Build with **Java 21** and **Gradle 9.2.1**:
+Java 21 and Gradle 9.2.1:
 
-~~~bash
+~~~sh
 gradle clean build --no-daemon
 ~~~
-
-[Team expeditions](docs/TEAM_EXPEDITIONS.md) · [Optional compatibility](docs/COMPATIBILITY.md) · [Portal construction](docs/PORTALS.md) · [Time limits](docs/TIME_LIMITS.md) · [Roadmap](docs/ROADMAP.md) · [Architecture](docs/ARCHITECTURE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Branding](docs/BRANDING.md) · [Changelog](CHANGELOG.md)
 
 ## License
 
