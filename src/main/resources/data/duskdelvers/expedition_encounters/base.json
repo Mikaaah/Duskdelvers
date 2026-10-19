@@ -1,0 +1,46 @@
+{
+  "entries": [
+    {
+      "entity": "minecraft:zombie",
+      "min_tier": 1,
+      "max_tier": 5,
+      "weight": 40
+    },
+    {
+      "entity": "minecraft:skeleton",
+      "min_tier": 1,
+      "max_tier": 5,
+      "weight": 35
+    },
+    {
+      "entity": "minecraft:spider",
+      "min_tier": 1,
+      "max_tier": 4,
+      "weight": 20
+    },
+    {
+      "entity": "minecraft:husk",
+      "min_tier": 2,
+      "max_tier": 5,
+      "weight": 12
+    },
+    {
+      "entity": "minecraft:stray",
+      "min_tier": 2,
+      "max_tier": 5,
+      "weight": 12
+    },
+    {
+      "entity": "minecraft:witch",
+      "min_tier": 3,
+      "max_tier": 5,
+      "weight": 8
+    },
+    {
+      "entity": "minecraft:wither_skeleton",
+      "min_tier": 4,
+      "max_tier": 5,
+      "weight": 10
+    }
+  ]
+}
