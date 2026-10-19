@@ -50,6 +50,8 @@ try:
 
     if "Done (" not in log.read_text(errors="replace"):
         raise RuntimeError("NeoForge server never reached ready state")
+    if "Parsing error loading recipe duskdelvers:delvers_compass" in log.read_text(errors="replace"):
+        raise RuntimeError("Delver's Compass survival crafting recipe failed to load")
 
     with socket.create_connection(("127.0.0.1", 25575), timeout=15) as sock:
         sock.settimeout(15)
@@ -83,6 +85,11 @@ try:
                 raise RuntimeError(f"RCON unexpected response id for {command}: {ident}")
             print(f"RCON: {command} => {answer.strip()}")
             return answer
+
+        # Command blocks cannot be placed in unloaded chunks. Explicitly load the
+        # compact test fixture region instead of relying on randomized spawn chunks.
+        result = rcon_command("execute in minecraft:overworld run forceload add 0 0 64 32")
+        print("Forceload result:", result)
 
         for tier, frame in frames.items():
             horizontal_x = tier % 2 == 1
