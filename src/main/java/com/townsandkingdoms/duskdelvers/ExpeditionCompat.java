@@ -44,7 +44,7 @@ public final class ExpeditionCompat {
     public static boolean reward(ServerPlayer player,ExpeditionSessions.Run run){
         if(!run.member(player.getUUID()))return true;
         // Always publish a stable event for other addon mods to subscribe to.
-        NeoForge.EVENT_BUS.post(new CavernCacheDiscoveredEvent(player,run.id(),run.tier()));
+        NeoForge.EVENT_BUS.post(new CavernCacheDiscoveredEvent(player,run.id(),run.discoveryTier()));
         if(DuskConfig.TNK_LOOT.get()&&DuskConfig.modAllowed("tnkloot")){
             addTnkLootTokens(player,run.tier());
         }

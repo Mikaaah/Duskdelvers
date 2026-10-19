@@ -10,8 +10,8 @@ import net.minecraft.world.level.saveddata.SavedData;
 import java.util.*;
 
 /**
- * Durable server-owned shared expedition state: all team members see one
- * sequence of rooms, one countdown and one guardian-completion state.
+ * Durable server-owned natural-cavern expedition state: one party countdown,
+ * one cache discovery milestone and one individual reward ledger.
  */
 public final class ExpeditionSessions extends SavedData {
     public static final String PLAYER_RUN_ID="DuskdelversSessionId";
@@ -20,10 +20,9 @@ public final class ExpeditionSessions extends SavedData {
     public static final class Run {
         private final ExpeditionLayout layout;
         private final List<UUID> members;
-        private int activated;
-        private int cleared;
         private int seconds;
-        private boolean completed;
+        private boolean discovered;
+        private int discoveryTier;
         private boolean expired;
         private transient long lastSecond=-1;
         private final Set<UUID> rewarded=new HashSet<>();
@@ -38,14 +37,12 @@ public final class ExpeditionSessions extends SavedData {
         public int id(){return layout.id();}
         public int tier(){return layout.tier();}
         public List<UUID> members(){return members;}
-        public int activated(){return activated;}
-        public int cleared(){return cleared;}
         public int seconds(){return seconds;}
-        public boolean completed(){return completed;}
+        public boolean discovered(){return discovered;}
+        public int discoveryTier(){return discoveryTier>0?discoveryTier:tier();}
         public boolean expired(){return expired;}
         public boolean member(UUID id){return members.contains(id);}
         public boolean rewarded(UUID id){return rewarded.contains(id);}
-        public int roomCount(){return layout.rooms().size();}
 
         public String timeText(){return "%d:%02d".formatted(seconds/60,seconds%60);}
         private CompoundTag toTag(){
@@ -64,10 +61,9 @@ public final class ExpeditionSessions extends SavedData {
                 rewards.add(row);
             }
             tag.put("rewarded",rewards);
-            tag.putInt("activated",activated);
-            tag.putInt("cleared",cleared);
             tag.putInt("seconds",seconds);
-            tag.putBoolean("completed",completed);
+            tag.putBoolean("discovered",discovered);
+            tag.putInt("discoveryTier",discoveryTier);
             tag.putBoolean("expired",expired);
             return tag;
         }
@@ -79,9 +75,9 @@ public final class ExpeditionSessions extends SavedData {
                 catch(IllegalArgumentException ignored){}
             }
             Run run=new Run(ExpeditionLayout.fromTag(tag),ids,Math.max(0,tag.getInt("seconds")));
-            run.activated=tag.getInt("activated");
-            run.cleared=tag.getInt("cleared");
-            run.completed=tag.getBoolean("completed");
+            // Legacy 0.3 sessions saved boss completion under "completed".
+            run.discovered=tag.getBoolean("discovered")||tag.getBoolean("completed");
+            run.discoveryTier=tag.getInt("discoveryTier");
             run.expired=tag.getBoolean("expired");
             ListTag rewards=tag.getList("rewarded",Tag.TAG_COMPOUND);
             for(int i=0;i<rewards.size();i++){
@@ -98,7 +94,7 @@ public final class ExpeditionSessions extends SavedData {
         for(int i=0;i<list.size();i++){
             try{
                 Run run=Run.fromTag(list.getCompound(i));
-                if(run.id()>0 && run.roomCount()>0 && !run.members().isEmpty())
+                if(run.id()>0 && !run.layout().rooms().isEmpty() && !run.members().isEmpty())
                     store.runs.put(run.id(),run);
             }catch(RuntimeException ignored){}
         }
@@ -127,35 +123,16 @@ public final class ExpeditionSessions extends SavedData {
         Run run=runs.get(tag.getInt(PLAYER_RUN_ID));
         return run!=null&&run.member(player.getUUID())?run:null;
     }
-    public boolean activate(Run run,int roomIndex){
-        if(run.expired)return false;
-        int mask=1<<roomIndex;
-        if((run.activated&mask)!=0)return false;
-        run.activated|=mask;
-        setDirty();
-        return true;
-    }
-    public boolean clear(Run run,int roomIndex){
-        int mask=1<<roomIndex;
-        if((run.cleared&mask)!=0 ||(run.activated&mask)==0)return false;
-        run.cleared|=mask;
-        setDirty();
-        return true;
-    }
-    /** First natural cache discovery marks the once-per-run team reward milestone. */
-    public boolean discover(Run run){
-        if(run.completed||run.expired)return false;
-        run.completed=true;
+    /**
+     * A run has only one milestone: its first discovered natural cave cache.
+     * Its difficulty is the biome where the cache was found, not the gateway tier.
+     */
+    public boolean discover(Run run,int biomeTier){
+        if(run.discovered||run.expired)return false;
+        run.discovered=true;
+        run.discoveryTier=Math.max(1,Math.min(5,biomeTier));
         if(run.seconds>=0)
             run.seconds=Math.max(run.seconds,DuskConfig.EXTRACTION_GRACE_MINUTES.get()*60);
-        setDirty();
-        return true;
-    }
-
-    public boolean complete(Run run){
-        if(run.completed||run.expired)return false;
-        run.completed=true;
-        if(run.seconds>=0)run.seconds=Math.max(run.seconds,DuskConfig.EXTRACTION_GRACE_MINUTES.get()*60);
         setDirty();
         return true;
     }

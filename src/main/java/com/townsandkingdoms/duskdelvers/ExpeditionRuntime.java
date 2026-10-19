@@ -84,7 +84,7 @@ public final class ExpeditionRuntime {
                         "Cavern expedition warning: "+run.timeText()+" until team extraction."));
         }
 
-        if(run.completed()&&!run.rewarded(player.getUUID())&&ExpeditionCompat.reward(player,run)){
+        if(run.discovered()&&!run.rewarded(player.getUUID())&&ExpeditionCompat.reward(player,run)){
             sessions.markRewarded(run,player.getUUID());
         }
 
@@ -165,7 +165,7 @@ public final class ExpeditionRuntime {
 
         var sessions=ExpeditionSessions.get(player.getServer());
         var run=sessions.forPlayer(player);
-        if(run==null||run.expired()||!sessions.discover(run))return;
+        if(run==null||run.expired()||!sessions.discover(run,CavernBiomes.tier(player.serverLevel().getBiome(event.getPos()))))return;
         for(ServerPlayer member:sessions.onlineMembers(player.getServer(),run)){
             member.sendSystemMessage(Component.literal(
                     player.getGameProfile().getName()+" discovered a natural cavern cache! "+
