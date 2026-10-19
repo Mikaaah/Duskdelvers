@@ -29,6 +29,8 @@ public final class ExpeditionRuntime {
         if (player.tickCount % 20 != 0) return;
         ServerLevel level=player.serverLevel();
         if (!level.dimension().equals(DuskCommands.CHAOS_CAVERNS)) return;
+        // Enforce the stay limit before an encounter or reward can be processed.
+        if (ExpeditionTimer.tick(player)) return;
         CompoundTag tag=player.getPersistentData().getCompound(ACTIVE);
         if (!tag.contains("rooms")) return;
         ExpeditionLayout layout=ExpeditionLayout.fromTag(tag);
@@ -66,6 +68,7 @@ public final class ExpeditionRuntime {
                 tag.putBoolean("completed",true);
                 if (DuskConfig.BOSS_REWARDS.get()) DungeonBuilder.bossReward(level,center,layout.tier(),layout.id());
                 PortalFrames.placeReturnGateway(level, center);
+                ExpeditionTimer.onGuardianDefeated(player);
                 player.giveExperiencePoints(layout.tier()*25);
                 player.sendSystemMessage(Component.literal(
                     "Expedition complete! Tier "+layout.tier()+" guardian defeated. Claim your reward and step through the extraction portal, or use /duskdelvers exit."));
@@ -121,7 +124,8 @@ public final class ExpeditionRuntime {
     public static void clonePlayer(PlayerEvent.Clone event) {
         CompoundTag original=event.getOriginal().getPersistentData();
         CompoundTag target=event.getEntity().getPersistentData();
-        for (String key:new String[]{"DuskdelversReturn",ACTIVE,"DuskdelversCompassTier"}) {
+        for (String key:new String[]{"DuskdelversReturn",ACTIVE,"DuskdelversCompassTier",
+                ExpeditionTimer.REMAINING_SECONDS,"DuskdelversTimerTier"}) {
             if (original.contains(key)) target.put(key,original.get(key).copy());
         }
     }

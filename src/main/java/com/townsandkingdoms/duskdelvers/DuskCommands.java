@@ -39,6 +39,7 @@ public final class DuskCommands {
                                         .executes(ctx -> activatePortal(ctx.getSource(),
                                                 BlockPosArgument.getLoadedBlockPos(ctx, "pos"))))))
                 .then(Commands.literal("exit").executes(ctx -> exit(ctx.getSource())))
+                .then(Commands.literal("time").executes(ctx -> time(ctx.getSource())))
                 .then(Commands.literal("status").executes(ctx -> status(ctx.getSource()))));
     }
 
@@ -94,6 +95,7 @@ public final class DuskCommands {
         rememberOrigin(player);
         StarterOutpost.ensureCreated(destination);
         player.teleportTo(destination,0.5,72,0.5,Set.of(),player.getYRot(),player.getXRot());
+        ExpeditionTimer.start(player, 0);
         player.sendSystemMessage(Component.literal("Entered the original arrival outpost. Use /duskdelvers start <1-5> for a generated dungeon."));
         return 1;
     }
@@ -125,6 +127,7 @@ public final class DuskCommands {
         var first=layout.rooms().get(0);
         player.teleportTo(dungeon,first.getX()+0.5,first.getY()+1.0,first.getZ()+0.5,
                 Set.of(),player.getYRot(),player.getXRot());
+        ExpeditionTimer.start(player, tier);
         player.sendSystemMessage(Component.literal("Duskdelvers • Tier "+tier+
                 " • Expedition #"+id+" • "+layout.rooms().size()+" generated rooms. Defeat the final guardian!"));
         return true;
@@ -172,8 +175,15 @@ public final class DuskCommands {
         player.teleportTo(dest,x,y,z,Set.of(),yaw,pitch);
         player.getPersistentData().remove(RETURN_TAG);
         player.getPersistentData().remove(ExpeditionRuntime.ACTIVE);
+        ExpeditionTimer.clear(player);
         player.sendSystemMessage(Component.literal("Returned from the Chaos Caverns."));
         return true;
+    }
+
+    private static int time(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        player.sendSystemMessage(Component.literal("Duskdelvers • " + ExpeditionTimer.status(player)));
+        return 1;
     }
 
     private static int status(CommandSourceStack source) throws CommandSyntaxException {
@@ -185,9 +195,11 @@ public final class DuskCommands {
             player.sendSystemMessage(Component.literal("Expedition #"+layout.id()+
                     " • Tier "+layout.tier()+" • Rooms cleared "+cleared+"/"+(layout.rooms().size()-1)+
                     " • "+(tag.getBoolean("completed")?"COMPLETED":"active")+
-                    " • Encounter entries "+EncounterProfiles.count()));
+                    " • Encounter entries "+EncounterProfiles.count()+
+                    " • "+ExpeditionTimer.status(player)));
         } else {
-            player.sendSystemMessage(Component.literal("Duskdelvers 0.2.1: no active expedition. Use /duskdelvers start <1-5>."));
+            player.sendSystemMessage(Component.literal("Duskdelvers 0.2.2: no active expedition • "+ExpeditionTimer.status(player)+
+                    ". Use /duskdelvers start <1-5>."));
         }
         return 1;
     }
