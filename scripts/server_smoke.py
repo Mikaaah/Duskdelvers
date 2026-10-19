@@ -86,7 +86,7 @@ try:
 
         for tier, frame in frames.items():
             horizontal_x = tier % 2 == 1
-            bx, by, bz = 24 + tier * 12, 85, 24
+            bx, by, bz = 6 + tier * 9, 85, 24
             coords = lambda u, v: (bx + u, by + v, bz) if horizontal_x else (bx, by + v, bz + u)
             def at(u, v):
                 return " ".join(map(str, coords(u, v)))
