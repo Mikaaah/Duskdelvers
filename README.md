@@ -24,7 +24,7 @@ Duskdelvers is an exploration mod for **Minecraft 1.21.1 / NeoForge**, being dev
 
 **In development.** The declared mod version remains `0.1.0-alpha`; no public Duskdelvers release is available. The source now includes an early 0.2 expedition implementation: planned room layouts and construction, tiered encounters, a final guardian and rewards, alongside the Delver's Compass and server settings.
 
-This work is **not validated**. The latest GitHub Actions build for the current source commit failed, and complete in-game, dedicated-server and multiplayer testing has not been confirmed. Check the [wiki status page](https://github.com/Mikaaah/Duskdelvers/wiki/Status) and [Actions](https://github.com/Mikaaah/Duskdelvers/actions) before using a build. Keep experimental builds in a disposable test instance.
+This work is **not validated**. The [GitHub Actions build for the 0.2 implementation commit](https://github.com/Mikaaah/Duskdelvers/actions/runs/39238546032) failed, and complete in-game, dedicated-server and multiplayer testing has not been confirmed. Check the [wiki status page](https://github.com/Mikaaah/Duskdelvers/wiki/Status) and [Actions](https://github.com/Mikaaah/Duskdelvers/actions) before using a build. Keep experimental builds in a disposable test instance.
 
 ## Development setup
 
