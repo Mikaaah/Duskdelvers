@@ -13,7 +13,7 @@ The project uses the owner-supplied **Duskdelvers Expeditions** purple / moonlig
 | `assets/branding/icon-64.png` | Tiny UI icon | 64 × 64 |
 | `assets/branding/github-social-preview.png` | GitHub repository social preview | 1280 × 640 |
 
-**Important:** Use **only the banner at the top** of the README, not both the logo and banner stacked together. Preserve the owner's provided artwork and typography. The assets are supplied separately in the branding package until committed to their paths.
+**Important:** Use **only the banner at the top** of the README, not both the logo and banner stacked together. Preserve the owner's provided artwork and typography. The official owner-supplied banner and logo are committed at these paths.
 
 ### Brand colors
 
@@ -28,9 +28,9 @@ The project uses the owner-supplied **Duskdelvers Expeditions** purple / moonlig
 
 ### Integration checklist
 
-- [ ] Add `banner.png` and `logo.png` to `assets/branding/` from the official branding pack
+- [x] Add `banner.png` and `logo.png` to `assets/branding/` from the official branding pack
 - [ ] Add 512px `duskdelvers.png` to `src/main/resources/`
 - [ ] Reference `logoFile="duskdelvers.png"` in `src/main/templates/META-INF/neoforge.mods.toml`
-- [ ] Place the wide banner at the beginning of `README.md` (only once)
+- [x] Place the wide banner at the beginning of `README.md` (only once)
 - [ ] Set GitHub social preview through repository settings
 - [ ] Rebuild and verify the mod-list icon and README rendering

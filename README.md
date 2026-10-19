@@ -1,4 +1,6 @@
-# Duskdelvers — Expeditions
+![Duskdelvers Expeditions banner](assets/branding/banner.png)
+
+# Duskdelvers Expeditions
 
 <p align="center">
   <img alt="Minecraft 1.21.1" src="https://img.shields.io/badge/Minecraft-1.21.1-462663?style=flat-square">
@@ -10,6 +12,13 @@
 > **Beneath the kingdoms, darkness holds its own.**
 
 **Duskdelvers** is an exploration-focused Minecraft mod for **NeoForge 1.21.1**, designed for *Towns & Kingdoms 3*. It will introduce the **Chaos Caverns**, an underground expedition dimension with challenging encounters, modular dungeons, treasures, and optional integrations with the modpack's combat and progression systems.
+
+## Project links
+
+- [Official project wiki](https://github.com/Mikaaah/Duskdelvers/wiki)
+- [Development roadmap](docs/ROADMAP.md)
+- [Architecture and current limitations](docs/ARCHITECTURE.md)
+- [Compatibility plan](docs/COMPATIBILITY.md)
 
 ## Current status
 
