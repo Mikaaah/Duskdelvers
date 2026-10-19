@@ -101,16 +101,18 @@ try:
             if "Expedition portal activated." not in result:
                 raise RuntimeError(f"Tier {tier} portal failed activation: {result}")
             portal = f"duskdelvers:tier_{tier}_portal"
+            rcon_command(place(5,1,"air"))
             result = rcon_command(
-                f"execute in minecraft:overworld if block {at(1,1)} {portal} run say GATEWAY_{tier}_ACTIVE")
-            if f"GATEWAY_{tier}_ACTIVE" not in result:
+                f"execute in minecraft:overworld if block {at(1,1)} {portal} run setblock {at(5,1)} minecraft:emerald_block")
+            if "Changed the block" not in result:
                 raise RuntimeError(f"Tier {tier} portal interior wasn't created: {result}")
 
             # Breaking a frame side must invalidate all linked interior blocks.
             rcon_command(place(0,2,"air"))
+            rcon_command(place(5,2,"air"))
             result = rcon_command(
-                f"execute in minecraft:overworld if block {at(1,2)} minecraft:air run say GATEWAY_{tier}_CLEARED")
-            if f"GATEWAY_{tier}_CLEARED" not in result:
+                f"execute in minecraft:overworld if block {at(1,2)} minecraft:air run setblock {at(5,2)} minecraft:diamond_block")
+            if "Changed the block" not in result:
                 raise RuntimeError(f"Tier {tier} portal didn't extinguish on frame break: {result}")
 
         print("All five portals passed activation, orientation and frame-break tests.")

@@ -7,9 +7,15 @@
     " A "
   ],
   "key": {
-    "I": "minecraft:iron_ingot",
-    "C": "minecraft:compass",
-    "A": "minecraft:amethyst_shard"
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:compass"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    }
   },
   "result": {
     "id": "duskdelvers:delvers_compass",
