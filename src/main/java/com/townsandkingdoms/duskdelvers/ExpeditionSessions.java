@@ -74,7 +74,7 @@ public final class ExpeditionSessions extends SavedData {
                 try{ids.add(UUID.fromString(list.getCompound(i).getString("uuid")));}
                 catch(IllegalArgumentException ignored){}
             }
-            Run run=new Run(ExpeditionLayout.fromTag(tag),ids,Math.max(0,tag.getInt("seconds")));
+            Run run=new Run(ExpeditionLayout.fromTag(tag),ids,Math.max(-1,tag.getInt("seconds")));
             // Legacy 0.3 sessions saved boss completion under "completed".
             run.discovered=tag.getBoolean("discovered")||tag.getBoolean("completed");
             run.discoveryTier=tag.getInt("discoveryTier");
