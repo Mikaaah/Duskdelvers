@@ -131,6 +131,13 @@ try:
             if expected not in limits:
                 raise RuntimeError(f"Missing or incorrect configured time limit: {expected}. Got {limits!r}")
         print("All six dimension/expedition time limit defaults passed server validation.")
+        daily = rcon_command("duskdelvers daily")
+        assert "Maximum team size: 4" in daily, daily
+        assert "16 blocks" in daily, daily
+        compatibility = rcon_command("duskdelvers compat")
+        assert "Detected optional mods:" in compatibility, compatibility
+        print("Daily quota and optional-mod diagnostics passed.")
+
 
     success = True
 finally:
