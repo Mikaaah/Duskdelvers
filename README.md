@@ -1,61 +1,81 @@
-![Duskdelvers Expeditions banner](assets/branding/banner.png)
+<div align="center">
 
-# Duskdelvers - Expeditions
+![Duskdelvers Expeditions](assets/branding/banner.png)
 
-<p align="center">
-  <img alt="Minecraft 1.21.1" src="https://img.shields.io/badge/Minecraft-1.21.1-462663?style=flat-square">
-  <img alt="NeoForge" src="https://img.shields.io/badge/Loader-NeoForge-6B2C8F?style=flat-square">
-  <img alt="Java 21" src="https://img.shields.io/badge/Java-21-88495E?style=flat-square">
-  <img alt="Development status" src="https://img.shields.io/badge/Status-In%20Development-B327CF?style=flat-square">
-</p>
+**Beneath the kingdoms, darkness holds its own.**
 
-> **Beneath the kingdoms, darkness holds its own.**
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21.1-462663?style=flat-square)](https://www.minecraft.net/)
+[![NeoForge](https://img.shields.io/badge/Loader-NeoForge-6B2C8F?style=flat-square)](https://neoforged.net/)
+[![Java](https://img.shields.io/badge/Java-21-88495E?style=flat-square)](https://adoptium.net/)
+[![Build](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml/badge.svg)](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml)
+[![Version](https://img.shields.io/badge/Version-0.2.0-B327CF?style=flat-square)](CHANGELOG.md)
 
-Duskdelvers is an exploration mod for **Minecraft 1.21.1 / NeoForge**, being developed for the [Towns & Kingdoms 3 modpack](https://www.curseforge.com/minecraft/modpacks/towns-kingdoms-3). Its focus is the **Chaos Caverns**: an underground setting for repeatable expeditions, encounters and rewards.
+</div>
 
-## Project links
+# Duskdelvers
 
-- [Project wiki](https://github.com/Mikaaah/Duskdelvers/wiki) · [Getting started](https://github.com/Mikaaah/Duskdelvers/wiki/Getting-Started) · [Current status](https://github.com/Mikaaah/Duskdelvers/wiki/Status)
-- [Chaos Caverns](https://github.com/Mikaaah/Duskdelvers/wiki/Chaos-Caverns) · [Commands](https://github.com/Mikaaah/Duskdelvers/wiki/Commands) · [Troubleshooting](https://github.com/Mikaaah/Duskdelvers/wiki/Troubleshooting)
-- [Roadmap](https://github.com/Mikaaah/Duskdelvers/wiki/Roadmap) · [Compatibility plans](https://github.com/Mikaaah/Duskdelvers/wiki/Compatibility)
-- [Issues and feedback](https://github.com/Mikaaah/Duskdelvers/issues) · [Towns & Kingdoms 3 on CurseForge](https://www.curseforge.com/minecraft/modpacks/towns-kingdoms-3)
+**Duskdelvers** is an exploration-focused Minecraft mod for **NeoForge 1.21.1**, developed for *Towns & Kingdoms 3*. Explore the **Chaos Caverns**, conquer generated dungeons, overcome increasingly dangerous encounters and collect treasure.
 
-## Status
+## What's included in 0.2.0
 
-**In development.** The declared mod version remains `0.1.0-alpha`; no public Duskdelvers release is available. The source now includes an early 0.2 expedition implementation: planned room layouts and construction, tiered encounters, a final guardian and rewards, alongside the Delver's Compass and server settings.
+| System | Feature |
+| --- | --- |
+| **Chaos Caverns** | Underground dimension with dripstone, lush cave and deep-dark zones |
+| **Generated expeditions** | Per-run connected layouts of 5–9 dungeon rooms with corridors and decorated arenas |
+| **Progressive difficulty** | Five tiers with increasing room count, enemy quantity, mob attributes and treasure |
+| **Encounters** | Datapack-configurable mob pools, named elite encounters and a guardian in the final room |
+| **Rewards** | Interior treasure caches, a guardian reward chest and completion XP |
+| **Delver's Compass** | Craftable entry/exit item with sneak-right-click tier selection |
+| **Commands** | Start at any tier, inspect status, visit the old outpost and leave |
+| **Configuration** | Optional mob scaling, encounter caps and guardian reward toggle |
 
-This work is **not validated**. The [GitHub Actions build for the 0.2 implementation commit](https://github.com/Mikaaah/Duskdelvers/actions/runs/39238546032) failed, and complete in-game, dedicated-server and multiplayer testing has not been confirmed. Check the [wiki status page](https://github.com/Mikaaah/Duskdelvers/wiki/Status) and [Actions](https://github.com/Mikaaah/Duskdelvers/actions) before using a build. Keep experimental builds in a disposable test instance.
+> **0.2.0 is a playable test build, not a finished content release.** The guardian uses a scaled vanilla creature, and dungeon rooms are generated on demand rather than placed by natural jigsaw world generation. Deep compatibility adapters and multiplayer instance resets are not included yet.
 
-## Development setup
+## Get started
 
-- Minecraft 1.21.1
-- NeoForge 21.1.x
-- Java 21
+1. Install Minecraft **1.21.1**, NeoForge **21.1.262+** within 21.1.x, and Java **21**.
+2. Download the newest successful artifact from [GitHub Actions](https://github.com/Mikaaah/Duskdelvers/actions/workflows/build.yml), extract it and put the JAR in `mods/`.
+3. Use a **new disposable test world**. The current version leaves old expedition regions in world saves.
+4. Craft a **Delver's Compass** (iron ingots, vanilla compass and amethyst shard) or `/give @s duskdelvers:delvers_compass`.
+5. Outside the dimension, **sneak-right-click** to cycle Tier I–V, then **right-click** to start.
+6. Defeat encounters, clear the last guardian, retrieve the boss treasure and use the compass to return.
 
-Build from the repository root:
+### Useful commands
 
-```bash
-gradle build --no-daemon
-```
+| Command | Function |
+| --- | --- |
+| `/duskdelvers start 1` through `/duskdelvers start 5` | Create a new expedition at the requested tier |
+| `/duskdelvers enter` | Open the fixed 0.1.0 test outpost |
+| `/duskdelvers status` | Show active run and encounter pool information |
+| `/duskdelvers exit` | Return to your saved origin |
 
-The current command interface includes `/duskdelvers enter`, `/duskdelvers start <1-5>`, `/duskdelvers exit` and `/duskdelvers status`. The Delver's Compass can select a tier and start or exit a run in source; these flows need validation.
+Commands require cheats/operator access as dictated by the game/server command setup.
 
-## Planned optional integrations
+## Datapack-driven encounters
 
-Duskdelvers is being designed to work standalone. Optional integrations are planned separately and are not required dependencies.
+Files in `data/<namespace>/expedition_encounters/*.json` can add mobs from installed mods without requiring a direct code dependency.
 
-- TNK Unidentified Loot — [CurseForge page pending approval](https://www.curseforge.com/minecraft/mc-mods/unidentified-loot-a-towns-kingdoms-mod)
-- Resonant Arcana — [CurseForge page pending approval](https://www.curseforge.com/minecraft/mc-mods/resonant-arcana)
+~~~json
+{
+  "entries": [
+    {"entity": "minecraft:skeleton", "weight": 30, "min_tier": 1, "max_tier": 5},
+    {"entity": "examplemod:cave_beast", "weight": 10, "min_tier": 3, "max_tier": 5, "requires_mod": "examplemod"}
+  ]
+}
+~~~
 
-These are separate projects; their planned integration does not mean they are currently supported by Duskdelvers.
+Invalid entity IDs and missing optional mods are ignored, with vanilla fallback encounters.
 
-## Documentation
+## Development
 
-- [Architecture and current limitations](docs/ARCHITECTURE.md)
-- [Development roadmap](docs/ROADMAP.md)
-- [Compatibility plan](docs/COMPATIBILITY.md)
-- [Branding guidelines](docs/BRANDING.md)
+Build with **Java 21** and **Gradle 9.2.1**:
+
+~~~bash
+gradle clean build --no-daemon
+~~~
+
+[Roadmap](docs/ROADMAP.md) · [Architecture](docs/ARCHITECTURE.md) · [Compatibility](docs/COMPATIBILITY.md) · [Branding](docs/BRANDING.md) · [Changelog](CHANGELOG.md)
 
 ## License
 
-All rights reserved unless the repository owner adopts an explicit license.
+All rights reserved.

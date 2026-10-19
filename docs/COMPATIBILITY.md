@@ -1,20 +1,20 @@
-# Compatibility plan
+# Compatibility matrix — 0.2.0
 
-All integrations are **planned** and **optional**. None are implemented in 0.1.0-alpha.
+**The base mod requires only NeoForge 1.21.1.** The following are future API integrations; datapacks can already contribute modded mobs using real entity IDs and `requires_mod`.
 
-| Integration | Planned responsibilities |
-| --- | --- |
-| TNK Unidentified Loot | Exclusive expedition rewards, discovery, rarity |
-| Epic Fight | Validated entity combat patches, no indiscriminate replacement |
-| Iron's Spells | Casters and magic bosses |
-| Apotheosis | Coordinated affix gear and elite rewards; avoid double drops |
-| Alex's Caves | Selected creatures, cave blocks and environments |
-| Cataclysm | Designated arena encounters only |
-| Twilight Forest | Themed dungeon mob pools |
-| The Aether | Themed sanctuaries and rewards |
-| Create | Optional mechanical puzzles |
-| Ars Nouveau | Optional magical interactions |
-| FTB Teams / Quests | Party objectives and quest completion events |
-| Puffish Skills | Skill XP on verified expedition completion |
+| Mod | 0.2.0 status | Planned feature |
+| --- | --- | --- |
+| TNK Unidentified Loot | Not integrated | Unidentified boss rewards, affixes and collections |
+| Epic Fight | Not integrated | Supported mob combat patches |
+| Iron's Spells | Generic mob pool only | Spellcaster templates and themed rewards |
+| Apotheosis | Not integrated | Coordinated affix loot and elite rewards |
+| Alex's Caves | Generic mob pool only | Selected mobs, materials and cave environments |
+| Cataclysm | Generic mob pool only | Compatible special encounters and custom arenas |
+| Twilight Forest | Generic mob pool only | Themed enemies and loot |
+| The Aether | Generic mob pool only | Themed sanctuaries and loot |
+| Create | Not integrated | Optional mechanical puzzles |
+| Ars Nouveau | Not integrated | Magic puzzle alternatives |
+| FTB Teams / Quests | Not integrated | Parties, objectives and quest events |
+| Puffish Skills | Not integrated | Configurable skill experience |
 
-Each adapter should self-disable when its provider is absent, datapacks must validate registry IDs, and loot/XP rewards must be awarded server-side. The underlying cave dimension remains functional without any optional content mod.
+Never add an external mob to pools until its 1.21.1 entity ID and spawn behavior are verified in an actual modpack. An absent mod or invalid entity ID is skipped at reload and normal vanilla encounters remain available.

@@ -1,37 +1,19 @@
-# Architecture
+# Architecture — 0.2.0
 
-## Mod ID
+The Chaos Caverns is a bundled noise-based cave dimension. Its three biome regions use vanilla cave biome definitions. True custom cavern biomes and native worldgen jigsaw structures are planned.
 
-`duskdelvers`, Java package `com.townsandkingdoms.duskdelvers`.
+**Expeditions:** `ExpeditionIndex` allocates a unique, monotonic run ID in overworld SavedData. `ExpeditionLayout` creates a seeded connected route on a 4×4 grid. `DungeonBuilder` constructs safe stone chambers, corridors and loot caches in a reserved region, entirely server-side.
 
-## Dimension
+**Combat:** `ExpeditionRuntime` activates rooms based on nearby player position every 20 ticks. Enemies are tagged with run/room IDs so ambient mobs do not count toward encounter completion. The boss reward chest appears when the final encounter clears.
 
-- `duskdelvers:chaos_caverns` is supplied as bundled Minecraft worldgen data.
-- The noise settings derive from vanilla 1.21.1 Nether cave density, replacing the default material with stone and fluid with water. A custom noise generator is not implemented in Java.
-- The biome source uses vanilla dripstone, lush and deep-dark caves; custom Duskdelvers biomes are future work.
-- The cave dimension is 128 blocks tall and uses the inherited bedrock rules.
+**Content:** `EncounterProfiles` reloads external datapack JSON, validates installed mods and entity registry IDs, and chooses weighted enemies by tier. `DuskConfig` exposes per-world server settings.
 
-## Travel and expeditions
+**Travel:** `DelversCompass` starts a run or returns to the saved external origin. `DuskCommands` offers equivalent commands and preserves the 0.1 starter outpost.
 
-The foundation commands are `/duskdelvers enter`, `/duskdelvers exit` and `/duskdelvers status`. The current source adds `/duskdelvers start <1-5>`, a Delver's Compass, saved expedition IDs, route planning, room construction, room-scoped encounters, a final guardian, completion rewards and server configuration.
-
-These are early 0.2 implementation work. The latest Actions build failed; do not treat the source as a verified or released playable loop until it builds and is tested in-game. The documented 0.1.0-alpha version has not been changed.
-
-## Starter area
-
-`StarterOutpost` creates a fixed sample arrival outpost, passage and vault once per world. It is a foundation/test area separate from the newer expedition route generation.
-
-## Encounter data
-
-Encounter profiles are loaded from datapack JSON under `data/<namespace>/expedition_encounters/*.json`. The loader filters missing mod IDs and invalid entity IDs rather than linking optional mods as hard Java dependencies. Optional compatibility is not yet a verified support matrix.
-
-## Dependencies
-
-Minecraft and NeoForge are the required runtime. Optional adapters are intended to remain soft dependencies.
-
-## Current validation limits
-
-- Latest GitHub Actions build for the current source commit failed.
-- Complete client, dedicated-server and multiplayer in-game validation is outstanding.
-- Save migration, run cleanup/reset safety, and balancing still require review.
-- Do not install current development source in a valuable world or describe it as a released feature.
+## Known limitations
+- One player owns each run. No secure co-op party ownership/claim system.
+- No automatic chunk cleanup/reset. Old regions persist.
+- Some foreign modded entities require their native environment or bespoke AI. They must be tested before adding to loot/encounter pools.
+- Bosses currently use vanilla mob entities with stronger attributes, not custom models and animations.
+- The generic JSON pool is not full API integration with TNK Loot or other third-party mods.
+- No claim of in-game client/server validation until tests are performed.
