@@ -68,10 +68,9 @@ public final class ExpeditionCompat {
 
     private static void command(ServerPlayer player,String command,String source){
         try{
-            int result=player.getServer().getCommands().performPrefixedCommand(
+            player.getServer().getCommands().performPrefixedCommand(
                     player.getServer().createCommandSourceStack().withPermission(4)
                             .withSuppressedOutput(),command);
-            if(result<1)warn(source,"Optional reward command returned no success: "+command,null);
         }catch(RuntimeException ex){
             warn(source,"Optional reward command was rejected: "+command,ex);
         }
