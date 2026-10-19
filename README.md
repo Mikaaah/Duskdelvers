@@ -11,7 +11,7 @@
 
 > **Beneath the kingdoms, darkness holds its own.**
 
-Duskdelvers is an exploration mod for **Minecraft 1.21.1 / NeoForge**, being developed for the [Towns & Kingdoms 3 modpack](https://www.curseforge.com/minecraft/modpacks/towns-kingdoms-3). Its planned focus is the **Chaos Caverns**: an underground setting for repeatable expeditions, combat encounters and rewards.
+Duskdelvers is an exploration mod for **Minecraft 1.21.1 / NeoForge**, being developed for the [Towns & Kingdoms 3 modpack](https://www.curseforge.com/minecraft/modpacks/towns-kingdoms-3). Its focus is the **Chaos Caverns**: an underground setting for repeatable expeditions, encounters and rewards.
 
 ## Project links
 
@@ -22,9 +22,9 @@ Duskdelvers is an exploration mod for **Minecraft 1.21.1 / NeoForge**, being dev
 
 ## Status
 
-**In development.** The declared mod version remains `0.1.0-alpha`; no public Duskdelvers release is available. The repository currently contains the cave dimension and starter outpost foundation, plus early expedition scaffolding such as the Delver's Compass, tier selection, saved expedition IDs, route-layout planning and server configuration.
+**In development.** The declared mod version remains `0.1.0-alpha`; no public Duskdelvers release is available. The source now includes an early 0.2 expedition implementation: planned room layouts and construction, tiered encounters, a final guardian and rewards, alongside the Delver's Compass and server settings.
 
-The expedition scaffolding has not been verified as a complete playable dungeon system. Room placement, encounters, progression and rewards still need implementation and in-game validation. Check the [wiki status page](https://github.com/Mikaaah/Duskdelvers/wiki/Status) and [Actions](https://github.com/Mikaaah/Duskdelvers/actions) for the current development state. Do not treat a source build as a released or tested mod.
+This work is **not validated**. The latest GitHub Actions build for the current source commit failed, and complete in-game, dedicated-server and multiplayer testing has not been confirmed. Check the [wiki status page](https://github.com/Mikaaah/Duskdelvers/wiki/Status) and [Actions](https://github.com/Mikaaah/Duskdelvers/actions) before using a build. Keep experimental builds in a disposable test instance.
 
 ## Development setup
 
@@ -38,7 +38,7 @@ Build from the repository root:
 gradle build --no-daemon
 ```
 
-For local testing, use a disposable development world. The current command interface includes `/duskdelvers enter`, `/duskdelvers exit` and `/duskdelvers status`. The Delver's Compass and expedition systems are active development work and have not been confirmed in-game.
+The current command interface includes `/duskdelvers enter`, `/duskdelvers start <1-5>`, `/duskdelvers exit` and `/duskdelvers status`. The Delver's Compass can select a tier and start or exit a run in source; these flows need validation.
 
 ## Planned optional integrations
 
