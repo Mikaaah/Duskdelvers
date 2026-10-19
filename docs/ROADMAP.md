@@ -20,6 +20,13 @@
 - [x] Portal travel cooldown, safe-return attempt and command debug validation.
 - [ ] In-game client rendering and survival construction testing.
 
+## 0.2.2 — Timed expeditions
+- [x] Configurable timer for all five tiers plus original outpost.
+- [x] Action bar countdown, warning thresholds and automatic safe extraction.
+- [x] Boss-clear looting grace; no inventory loss; persistence across logout.
+- [x] In-game time and server time-limits commands.
+- [ ] Verify client HUD and real multiplayer expiry behavior during gameplay.
+
 ## 0.3.x — Caverns & dungeon expansion
 - [ ] True natural jigsaw structure generation, new modular rooms and custom dungeon features.
 - [ ] Custom cave biomes and fluid/terrain polishing.

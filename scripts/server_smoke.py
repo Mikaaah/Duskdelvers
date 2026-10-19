@@ -124,6 +124,14 @@ try:
 
         print("All five portals passed activation, orientation and frame-break tests.")
 
+        limits = rcon_command("duskdelvers limits")
+        for expected in ("outpost=30m", "Tier 1=20m", "Tier 2=25m",
+                         "Tier 3=30m", "Tier 4=35m", "Tier 5=40m",
+                         "extraction grace=3m"):
+            if expected not in limits:
+                raise RuntimeError(f"Missing or incorrect configured time limit: {expected}. Got {limits!r}")
+        print("All six dimension/expedition time limit defaults passed server validation.")
+
     success = True
 finally:
     if proc is not None and proc.poll() is None:

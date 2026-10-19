@@ -1,4 +1,4 @@
-# Architecture — 0.2.1
+# Architecture — 0.2.2
 
 The Chaos Caverns is a bundled noise-based cave dimension. Its three biome regions use vanilla cave biome definitions. True custom cavern biomes and native worldgen jigsaw structures are planned.
 
@@ -9,6 +9,8 @@ The Chaos Caverns is a bundled noise-based cave dimension. Its three biome regio
 **Content:** `EncounterProfiles` reloads external datapack JSON, validates installed mods and entity registry IDs, and chooses weighted enemies by tier. `DuskConfig` exposes per-world server settings.
 
 **Portals:** `PortalFrames` finds complete 4×5 frames made of a specific vanilla block, fills their 2×3 interiors with tier-specific `GatewayBlock` states, validates frame integrity and creates return gateways. `GatewayBlock` handles server-authoritative walk-through travel with cooldowns. Entry/exit share the existing `DuskCommands` destination logic; an operator-only command supports test automation.
+
+**Timer:** `ExpeditionTimer` counts one second per 20 active player ticks while the player is in Chaos Caverns, persists its state in player NBT, sends action-bar and chat warnings, and uses the common `DuskCommands.returnPlayer` extraction path on expiry. `DuskConfig` controls durations and post-boss grace. Outside-dimension time and offline sessions do not consume the countdown.
 
 **Travel:** `DelversCompass` starts a run or returns to the saved external origin. `DuskCommands` offers equivalent commands and preserves the 0.1 starter outpost.
 

@@ -40,6 +40,7 @@ public final class DuskCommands {
                                                 BlockPosArgument.getLoadedBlockPos(ctx, "pos"))))))
                 .then(Commands.literal("exit").executes(ctx -> exit(ctx.getSource())))
                 .then(Commands.literal("time").executes(ctx -> time(ctx.getSource())))
+                .then(Commands.literal("limits").executes(ctx -> limits(ctx.getSource())))
                 .then(Commands.literal("status").executes(ctx -> status(ctx.getSource()))));
     }
 
@@ -178,6 +179,23 @@ public final class DuskCommands {
         ExpeditionTimer.clear(player);
         player.sendSystemMessage(Component.literal("Returned from the Chaos Caverns."));
         return true;
+    }
+
+    private static int limits(CommandSourceStack source) {
+        StringBuilder result = new StringBuilder("Duskdelvers time limits: ");
+        if (!DuskConfig.TIMERS_ENABLED.get()) {
+            result.append("disabled");
+        } else {
+            result.append("outpost=").append(DuskConfig.OUTPOST_MINUTES.get()).append("m");
+            for (int i = 0; i < 5; i++) {
+                result.append(" | Tier ").append(i + 1).append("=")
+                        .append(DuskConfig.TIER_MINUTES.get(i).get()).append("m");
+            }
+            result.append(" | extraction grace=")
+                    .append(DuskConfig.EXTRACTION_GRACE_MINUTES.get()).append("m");
+        }
+        source.sendSuccess(() -> Component.literal(result.toString()), false);
+        return 1;
     }
 
     private static int time(CommandSourceStack source) throws CommandSyntaxException {

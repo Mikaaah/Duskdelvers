@@ -1,4 +1,4 @@
-# Player-built Expedition Portals (0.2.1)
+# Player-built Expedition Portals (0.2.2)
 
 Build **one portal per difficulty tier** with ordinary survival blocks. There are no naturally generated portal hubs in this version.
 
@@ -32,6 +32,10 @@ F F F F
 4. **Walk through the portal** to start a newly generated expedition at the frame's tier.
 
 You may build multiple portals at your base, and all five portals can be used immediately if you have the materials. Every successful entry allocates a new dungeon region in the same **Chaos Caverns** dimension. This is deliberately not five separate dimensions.
+
+### Timed visits
+
+Each portal starts a tier-specific countdown, shown above your hotbar. Tier I starts at 20 minutes, Tier V at 40 minutes. When the timer reaches zero, you are automatically extracted to your original entry position, keeping your items. See [Time limits](TIME_LIMITS.md) for full defaults and configuration.
 
 ### Returning
 
