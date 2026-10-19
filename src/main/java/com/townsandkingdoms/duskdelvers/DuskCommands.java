@@ -1,6 +1,8 @@
 package com.townsandkingdoms.duskdelvers;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import java.util.List;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,6 +40,15 @@ public final class DuskCommands {
                                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                                         .executes(ctx -> activatePortal(ctx.getSource(),
                                                 BlockPosArgument.getLoadedBlockPos(ctx, "pos"))))))
+                .then(Commands.literal("team")
+                    .then(Commands.literal("invite")
+                        .then(Commands.argument("player",StringArgumentType.word())
+                            .executes(ctx -> teamInvite(ctx.getSource(),StringArgumentType.getString(ctx,"player")))))
+                    .then(Commands.literal("accept").executes(ctx -> teamAccept(ctx.getSource())))
+                    .then(Commands.literal("leave").executes(ctx -> teamLeave(ctx.getSource())))
+                    .then(Commands.literal("ready").executes(ctx -> teamReady(ctx.getSource())))
+                    .then(Commands.literal("status").executes(ctx -> teamStatus(ctx.getSource()))))
+                .then(Commands.literal("entries").executes(ctx -> entries(ctx.getSource())))
                 .then(Commands.literal("exit").executes(ctx -> exit(ctx.getSource())))
                 .then(Commands.literal("time").executes(ctx -> time(ctx.getSource())))
                 .then(Commands.literal("limits").executes(ctx -> limits(ctx.getSource())))
@@ -110,27 +121,55 @@ public final class DuskCommands {
             player.sendSystemMessage(Component.literal("Expeditions are disabled by the server config."));
             return false;
         }
-        if (tier<1 || tier>5) return false;
+        if (tier < 1 || tier > 5) return false;
         ServerLevel dungeon=player.getServer().getLevel(CHAOS_CAVERNS);
         if (dungeon==null) {
             player.sendSystemMessage(Component.literal("Chaos Caverns dimension is missing. Check datapack errors."));
             return false;
         }
-        if (!player.serverLevel().dimension().equals(CHAOS_CAVERNS)) rememberOrigin(player);
+        List<ServerPlayer> members=ExpeditionParty.participants(player);
+        if(members.isEmpty()) return false;
+        ExpeditionQuota quota=ExpeditionQuota.get(player.getServer());
+        if(!quota.canStart(members)){
+            for(ServerPlayer member:members){
+                if(quota.remaining(member.getUUID())==0)
+                    player.sendSystemMessage(Component.literal(member.getGameProfile().getName()
+                            +" has used all expedition entries for today."));
+            }
+            return false;
+        }
         int id=ExpeditionIndex.get(player.getServer()).allocate();
         ExpeditionLayout layout=ExpeditionLayout.generate(id,tier,dungeon.getSeed());
-        if (layout.rooms().size()<3) {
+        if(layout.rooms().size()<3){
             player.sendSystemMessage(Component.literal("Failed to generate an expedition route."));
             return false;
         }
-        DungeonBuilder.build(dungeon,layout);
-        player.getPersistentData().put(ExpeditionRuntime.ACTIVE,layout.toTag());
-        var first=layout.rooms().get(0);
-        player.teleportTo(dungeon,first.getX()+0.5,first.getY()+1.0,first.getZ()+0.5,
-                Set.of(),player.getYRot(),player.getXRot());
-        ExpeditionTimer.start(player, tier);
-        player.sendSystemMessage(Component.literal("Duskdelvers • Tier "+tier+
-                " • Expedition #"+id+" • "+layout.rooms().size()+" generated rooms. Defeat the final guardian!"));
+        try {
+            DungeonBuilder.build(dungeon,layout);
+        } catch(RuntimeException ex) {
+            Duskdelvers.LOG.error("Failed constructing expedition {}",id,ex);
+            player.sendSystemMessage(Component.literal("Dungeon generation failed. No entries were charged."));
+            return false;
+        }
+
+        // Store the session before charging entries. All members are committed as a group.
+        ExpeditionSessions sessions=ExpeditionSessions.get(player.getServer());
+        ExpeditionSessions.Run run=sessions.create(layout,members);
+        quota.consume(members);
+        var spawn=layout.rooms().get(0);
+        for(ServerPlayer member:members){
+            if(!member.serverLevel().dimension().equals(CHAOS_CAVERNS))rememberOrigin(member);
+            member.getPersistentData().put(ExpeditionRuntime.ACTIVE,layout.toTag());
+            member.getPersistentData().putInt(ExpeditionSessions.PLAYER_RUN_ID,id);
+            ExpeditionTimer.clear(member); // Shared session owns the timer.
+            member.teleportTo(dungeon,spawn.getX()+0.5,spawn.getY()+1.0,spawn.getZ()+0.5,
+                    Set.of(),member.getYRot(),member.getXRot());
+            member.sendSystemMessage(Component.literal(
+                    "Duskdelvers • Tier "+tier+" • Team expedition #"+id+
+                    " • "+members.size()+" adventurers • "+layout.rooms().size()+
+                    " rooms • "+(run.seconds()<0?"No time limit":run.timeText()+" time")+
+                    " • "+quota.status(member)));
+        }
         return true;
     }
 
@@ -176,9 +215,40 @@ public final class DuskCommands {
         player.teleportTo(dest,x,y,z,Set.of(),yaw,pitch);
         player.getPersistentData().remove(RETURN_TAG);
         player.getPersistentData().remove(ExpeditionRuntime.ACTIVE);
+        player.getPersistentData().remove(ExpeditionSessions.PLAYER_RUN_ID);
         ExpeditionTimer.clear(player);
         player.sendSystemMessage(Component.literal("Returned from the Chaos Caverns."));
         return true;
+    }
+
+    private static int teamInvite(CommandSourceStack source,String name) throws CommandSyntaxException {
+        ServerPlayer sender=source.getPlayerOrException();
+        ServerPlayer target=source.getServer().getPlayerList().getPlayerByName(name);
+        if(target==null){
+            source.sendFailure(Component.literal("That player is not online."));
+            return 0;
+        }
+        return ExpeditionParty.invite(sender,target)?1:0;
+    }
+    private static int teamAccept(CommandSourceStack source) throws CommandSyntaxException{
+        return ExpeditionParty.accept(source.getPlayerOrException())?1:0;
+    }
+    private static int teamLeave(CommandSourceStack source) throws CommandSyntaxException{
+        return ExpeditionParty.leave(source.getPlayerOrException())?1:0;
+    }
+    private static int teamReady(CommandSourceStack source) throws CommandSyntaxException{
+        ExpeditionParty.toggleFtbReady(source.getPlayerOrException());
+        return 1;
+    }
+    private static int teamStatus(CommandSourceStack source) throws CommandSyntaxException{
+        ServerPlayer player=source.getPlayerOrException();
+        player.sendSystemMessage(Component.literal(ExpeditionParty.status(player)));
+        return 1;
+    }
+    private static int entries(CommandSourceStack source) throws CommandSyntaxException {
+        ServerPlayer player=source.getPlayerOrException();
+        player.sendSystemMessage(Component.literal("Duskdelvers • "+ExpeditionQuota.get(player.getServer()).status(player)));
+        return 1;
     }
 
     private static int limits(CommandSourceStack source) {
@@ -204,20 +274,20 @@ public final class DuskCommands {
         return 1;
     }
 
-    private static int status(CommandSourceStack source) throws CommandSyntaxException {
+    private static int status(CommandSourceStack source) throws CommandSyntaxException{
         ServerPlayer player=source.getPlayerOrException();
-        CompoundTag tag=player.getPersistentData().getCompound(ExpeditionRuntime.ACTIVE);
-        if (tag.contains("rooms")) {
-            ExpeditionLayout layout=ExpeditionLayout.fromTag(tag);
-            int cleared=Integer.bitCount(tag.getInt("cleared"));
-            player.sendSystemMessage(Component.literal("Expedition #"+layout.id()+
-                    " • Tier "+layout.tier()+" • Rooms cleared "+cleared+"/"+(layout.rooms().size()-1)+
-                    " • "+(tag.getBoolean("completed")?"COMPLETED":"active")+
-                    " • Encounter entries "+EncounterProfiles.count()+
-                    " • "+ExpeditionTimer.status(player)));
-        } else {
-            player.sendSystemMessage(Component.literal("Duskdelvers 0.2.2: no active expedition • "+ExpeditionTimer.status(player)+
-                    ". Use /duskdelvers start <1-5>."));
+        var sessions=ExpeditionSessions.get(player.getServer());
+        var active=sessions.forPlayer(player);
+        if(active!=null){
+            player.sendSystemMessage(Component.literal("Expedition #"+active.id()+" • Tier "+
+                    active.tier()+" • Rooms cleared "+Integer.bitCount(active.cleared())+"/"+(active.roomCount()-1)+
+                    " • Party "+active.members().size()+" • "+
+                    (active.completed()?"COMPLETE":active.expired()?"EXPIRED":"active")+
+                    " • "+(active.seconds()<0?"Unlimited time":active.timeText()+" remaining")+
+                    " • "+ExpeditionQuota.get(player.getServer()).status(player)));
+        }else{
+            player.sendSystemMessage(Component.literal("Duskdelvers 0.3.0 • No active team expedition • "+
+                    ExpeditionTimer.status(player)+" • "+ExpeditionQuota.get(player.getServer()).status(player)));
         }
         return 1;
     }
