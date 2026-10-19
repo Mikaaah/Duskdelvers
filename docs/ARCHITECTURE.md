@@ -1,25 +1,37 @@
 # Architecture
 
 ## Mod ID
+
 `duskdelvers`, Java package `com.townsandkingdoms.duskdelvers`.
 
 ## Dimension
-- `duskdelvers:chaos_caverns` is supplied as a bundled Minecraft worldgen data definition.
-- `worldgen/noise_settings/chaos_caverns.json` derives from vanilla 1.21.1 Nether cave density, replacing its default material with stone and fluid with water. A custom noise generator is **not** implemented in Java yet.
-- Biome source currently uses vanilla dripstone, lush and deep dark caves; custom Duskdelvers biomes are a future feature.
-- Cave dimension is 128 blocks tall, covered, dark and bounded by the inherited bedrock rules.
 
-## Travel
-`/duskdelvers enter` stores the player's original dimension, XYZ and view angles in the player's persistent data, creates the starter outpost when absent and teleports the player there. `/duskdelvers exit` restores the origin, falling back to overworld spawn if the original dimension has disappeared.
+- `duskdelvers:chaos_caverns` is supplied as bundled Minecraft worldgen data.
+- The noise settings derive from vanilla 1.21.1 Nether cave density, replacing the default material with stone and fluid with water. A custom noise generator is not implemented in Java.
+- The biome source uses vanilla dripstone, lush and deep-dark caves; custom Duskdelvers biomes are future work.
+- The cave dimension is 128 blocks tall and uses the inherited bedrock rules.
 
-## Test room
-`StarterOutpost` installs a fixed sample outpost, passage and vault once per world. It uses a center-floor completion marker and does not regenerate the initial loot on every visit. This is a **test fixture**, not the planned procedural dungeon generator.
+## Travel and expeditions
+
+The foundation commands are `/duskdelvers enter`, `/duskdelvers exit` and `/duskdelvers status`. The current source adds `/duskdelvers start <1-5>`, a Delver's Compass, saved expedition IDs, route planning, room construction, room-scoped encounters, a final guardian, completion rewards and server configuration.
+
+These are early 0.2 implementation work. The latest Actions build failed; do not treat the source as a verified or released playable loop until it builds and is tested in-game. The documented 0.1.0-alpha version has not been changed.
+
+## Starter area
+
+`StarterOutpost` creates a fixed sample arrival outpost, passage and vault once per world. It is a foundation/test area separate from the newer expedition route generation.
+
+## Encounter data
+
+Encounter profiles are loaded from datapack JSON under `data/<namespace>/expedition_encounters/*.json`. The loader filters missing mod IDs and invalid entity IDs rather than linking optional mods as hard Java dependencies. Optional compatibility is not yet a verified support matrix.
 
 ## Dependencies
-Only Minecraft and NeoForge. Optional adapters are intended to be soft dependencies, with registry checks and guarded code paths.
 
-## Known limitations
-- Entry via commands only; these are intended for early test worlds.
-- No unique mobs, bosses, procedural structure placement or difficulty tiers in v0.1.0-alpha.
-- No automated server launch test has been asserted; check Actions builds for compiler status.
-- Mod-removal save migrations, reset safety and full multiplayer balancing remain unimplemented.
+Minecraft and NeoForge are the required runtime. Optional adapters are intended to remain soft dependencies.
+
+## Current validation limits
+
+- Latest GitHub Actions build for the current source commit failed.
+- Complete client, dedicated-server and multiplayer in-game validation is outstanding.
+- Save migration, run cleanup/reset safety, and balancing still require review.
+- Do not install current development source in a valuable world or describe it as a released feature.
