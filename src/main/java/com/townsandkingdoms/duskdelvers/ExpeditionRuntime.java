@@ -25,65 +25,116 @@ public final class ExpeditionRuntime {
     private ExpeditionRuntime() {}
 
     public static void tick(PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (player.tickCount % 20 != 0) return;
+        if(!(event.getEntity() instanceof ServerPlayer player))return;
+        if(player.tickCount%20!=0)return;
         ServerLevel level=player.serverLevel();
-        if (!level.dimension().equals(DuskCommands.CHAOS_CAVERNS)) return;
-        // Enforce the stay limit before an encounter or reward can be processed.
-        if (ExpeditionTimer.tick(player)) return;
-        CompoundTag tag=player.getPersistentData().getCompound(ACTIVE);
-        if (!tag.contains("rooms")) return;
-        ExpeditionLayout layout=ExpeditionLayout.fromTag(tag);
-        List<BlockPos> rooms=layout.rooms();
-        if (rooms.size()<2) return;
-        int activated=tag.getInt("activated");
-        int cleared=tag.getInt("cleared");
+        if(!level.dimension().equals(DuskCommands.CHAOS_CAVERNS))return;
 
-        for (int i=1;i<rooms.size();i++) {
-            int mask=1<<i;
-            if ((cleared & mask)!=0) continue;
-            BlockPos center=rooms.get(i);
-            // Only process rooms around the participant, never the entire level.
-            if (player.blockPosition().distSqr(center)>400) continue;
-            if (!level.hasChunkAt(center)) continue;
-            if ((activated & mask)==0) {
-                spawnRoom(level,layout,i);
-                activated|=mask;
-                tag.putInt("activated",activated);
+        ExpeditionSessions sessions=ExpeditionSessions.get(player.getServer());
+        ExpeditionSessions.Run run=sessions.forPlayer(player);
+        if(run==null){
+            if(player.getPersistentData().contains(ExpeditionSessions.PLAYER_RUN_ID)){
                 player.sendSystemMessage(Component.literal(
-                        (i==rooms.size()-1 ? "A dungeon guardian approaches! " : "Ambush! ")
-                        +"Tier "+layout.tier()+" • Room "+i+"/"+(rooms.size()-1)));
+                        "Your expedition session could not be found. Returning to safety."));
+                DuskCommands.returnPlayer(player);
+                return;
             }
+            // The 0.2.2 arrival outpost keeps its independent dimension timer.
+            ExpeditionTimer.tick(player);
+            return;
+        }
+        if(run.expired()){
+            DuskCommands.returnPlayer(player);
+            return;
+        }
 
-            AABB bounds=new AABB(center.getX()-9,center.getY(),center.getZ()-9,center.getX()+10,center.getY()+7,center.getZ()+10);
-            final int roomIndex=i;
-            List<Mob> alive=level.getEntitiesOfClass(Mob.class,bounds, mob ->
-                    mob.isAlive() && mob.getPersistentData().getInt(MOB_RUN)==layout.id()
-                    && mob.getPersistentData().getInt(MOB_ROOM)==roomIndex);
-            if (!alive.isEmpty()) continue;
-            cleared|=mask;
-            tag.putInt("cleared",cleared);
-            player.giveExperiencePoints(layout.tier()*4);
-            if (i==rooms.size()-1 && !tag.getBoolean("completed")) {
-                tag.putBoolean("completed",true);
-                if (DuskConfig.BOSS_REWARDS.get()) DungeonBuilder.bossReward(level,center,layout.tier(),layout.id());
-                PortalFrames.placeReturnGateway(level, center);
-                ExpeditionTimer.onGuardianDefeated(player);
-                player.giveExperiencePoints(layout.tier()*25);
-                player.sendSystemMessage(Component.literal(
-                    "Expedition complete! Tier "+layout.tier()+" guardian defeated. Claim your reward and step through the extraction portal, or use /duskdelvers exit."));
-            } else {
-                player.sendSystemMessage(Component.literal("Room "+i+" cleared. Continue deeper."));
+        int before=run.seconds();
+        if(sessions.tickTime(run,level.getGameTime())){
+            sessions.expire(run);
+            for(ServerPlayer member:sessions.onlineMembers(player.getServer(),run)){
+                member.sendSystemMessage(Component.literal(
+                        "The expedition time has expired. Your inventory is safe; returning to the entry point."));
+                DuskCommands.returnPlayer(member);
+            }
+            return;
+        }
+        int seconds=run.seconds();
+        if(seconds>=0&&DuskConfig.DISPLAY_TIMER.get()){
+            net.minecraft.ChatFormatting color=seconds<=60?net.minecraft.ChatFormatting.RED:
+                    seconds<=300?net.minecraft.ChatFormatting.YELLOW:net.minecraft.ChatFormatting.LIGHT_PURPLE;
+            player.displayClientMessage(Component.literal(
+                    "Duskdelvers • Team "+run.members().size()+" • "+run.timeText()+" remaining")
+                    .withStyle(color),true);
+        }
+        if(before!=seconds&&(seconds==300||seconds==60||seconds==10)){
+            for(ServerPlayer member:sessions.onlineMembers(player.getServer(),run))
+                member.sendSystemMessage(Component.literal(
+                        "Expedition warning: "+run.timeText()+" until party extraction."));
+        }
+
+        // The boss reward is per player, with a SavedData claim ledger. Reconnecting
+        // during the extraction window does not lose a claim or duplicate rewards.
+        if(run.completed()&&!run.rewarded(player.getUUID())){
+            if(ExpeditionCompat.reward(player,run)){
+                sessions.markRewarded(run,player.getUUID());
+            }
+        }
+
+        if(run.completed())return;
+        var rooms=run.layout().rooms();
+        for(int i=1;i<rooms.size();i++){
+            int mask=1<<i;
+            if((run.cleared()&mask)!=0)continue;
+            BlockPos center=rooms.get(i);
+            if(player.blockPosition().distSqr(center)>400 || !level.hasChunkAt(center))continue;
+            if((run.activated()&mask)==0){
+                int spawned=spawnRoom(level,run.layout(),i);
+                if(spawned==0)continue;
+                sessions.activate(run,i);
+                for(ServerPlayer member:sessions.onlineMembers(player.getServer(),run))
+                    member.sendSystemMessage(Component.literal(
+                            (i==rooms.size()-1?"A dungeon guardian approaches! ":"Ambush! ")+
+                            "Tier "+run.tier()+" • Room "+i+"/"+(rooms.size()-1)));
+            }
+            int room=i;
+            AABB bounds=new AABB(center.getX()-18,center.getY()-2,center.getZ()-18,
+                    center.getX()+19,center.getY()+12,center.getZ()+19);
+            List<Mob> alive=level.getEntitiesOfClass(Mob.class,bounds,mob->
+                    mob.isAlive()&&mob.getPersistentData().getInt(MOB_RUN)==run.id()&&
+                    mob.getPersistentData().getInt(MOB_ROOM)==room);
+            if(!alive.isEmpty())continue;
+            if(!sessions.clear(run,i))continue;
+            for(ServerPlayer member:sessions.onlineMembers(player.getServer(),run)){
+                member.giveExperiencePoints(run.tier()*4);
+            }
+            if(i==rooms.size()-1&&sessions.complete(run)){
+                if(DuskConfig.BOSS_REWARDS.get())
+                    DungeonBuilder.bossReward(level,center,run.tier(),run.id());
+                PortalFrames.placeReturnGateway(level,center);
+                for(ServerPlayer member:sessions.onlineMembers(player.getServer(),run)){
+                    member.giveExperiencePoints(run.tier()*25);
+                    member.sendSystemMessage(Component.literal(
+                            "Team expedition complete! Claim your personal rewards, loot the boss chest, and extract. "+
+                            (run.seconds()<0?"":run.timeText()+" remaining.")));
+                    if(ExpeditionCompat.reward(member,run)){
+                        sessions.markRewarded(run,member.getUUID());
+                    }
+                }
+            }else{
+                for(ServerPlayer member:sessions.onlineMembers(player.getServer(),run))
+                    member.sendSystemMessage(Component.literal(
+                            "Room "+i+" cleared for your expedition team. Continue deeper."));
             }
         }
     }
 
-    private static void spawnRoom(ServerLevel level,ExpeditionLayout layout,int roomIndex) {
+    private static int spawnRoom(ServerLevel level,ExpeditionLayout layout,int roomIndex) {
         BlockPos center=layout.rooms().get(roomIndex);
         boolean boss=roomIndex==layout.rooms().size()-1;
         int tier=layout.tier();
         Random rng=new Random(level.getSeed() ^ ((long)layout.id()*97161283L) ^ roomIndex);
         int count=boss?1:Math.min(DuskConfig.MAX_ROOM_ENEMIES.get(),2+tier+(roomIndex%2));
+        int spawned=0;
         for (int n=0;n<count;n++) {
             EntityType<?> type=boss?(tier>=3 ? EntityType.RAVAGER : EntityType.WITHER_SKELETON)
                     : EncounterProfiles.pick(tier,rng);
@@ -117,15 +168,17 @@ public final class ExpeditionRuntime {
                 AttributeInstance damage=mob.getAttribute(Attributes.ATTACK_DAMAGE);
                 if (damage!=null) damage.setBaseValue(Math.min(35,damage.getBaseValue()*(1+0.2*(tier-1))));
             }
-            level.addFreshEntity(mob);
+            if(level.addFreshEntity(mob))spawned++;
         }
+        return spawned;
     }
 
     public static void clonePlayer(PlayerEvent.Clone event) {
         CompoundTag original=event.getOriginal().getPersistentData();
         CompoundTag target=event.getEntity().getPersistentData();
         for (String key:new String[]{"DuskdelversReturn",ACTIVE,"DuskdelversCompassTier",
-                ExpeditionTimer.REMAINING_SECONDS,"DuskdelversTimerTier"}) {
+                ExpeditionTimer.REMAINING_SECONDS,"DuskdelversTimerTier",
+                ExpeditionSessions.PLAYER_RUN_ID,"DuskdelversFtbTeamReady"}) {
             if (original.contains(key)) target.put(key,original.get(key).copy());
         }
     }
