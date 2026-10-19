@@ -16,6 +16,9 @@
 
 **Duskdelvers** is an exploration-focused Minecraft mod for **NeoForge 1.21.1**, developed for *Towns & Kingdoms 3*. Explore the **Chaos Caverns**, conquer generated dungeons, overcome increasingly dangerous encounters and collect treasure.
 
+- **Project links:** [Wiki](https://github.com/Mikaaah/Duskdelvers/wiki) · [Status](https://github.com/Mikaaah/Duskdelvers/wiki/Status) · [Issues](https://github.com/Mikaaah/Duskdelvers/issues) · [Towns & Kingdoms 3 on CurseForge](https://www.curseforge.com/minecraft/modpacks/towns-kingdoms-3)
+- **Planned optional integrations:** TNK Unidentified Loot ([CurseForge page pending approval](https://www.curseforge.com/minecraft/mc-mods/unidentified-loot-a-towns-kingdoms-mod)) and Resonant Arcana ([CurseForge page pending approval](https://www.curseforge.com/minecraft/mc-mods/resonant-arcana)). These are separate projects, not current Duskdelvers features.
+
 ## What's included in 0.2.0
 
 | System | Feature |
