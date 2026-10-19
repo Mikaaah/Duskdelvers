@@ -4,10 +4,8 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   build:
     name: NeoForge 1.21.1 / Java 21
@@ -25,12 +23,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.2.1'
-      - name: Build
-        run: gradle build --no-daemon --stacktrace
+      - name: Compile and package
+        run: gradle clean build --no-daemon --stacktrace
       - name: Upload compiled mod JAR
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: Duskdelvers-0.1.0-alpha-NeoForge-1.21.1
-          path: build/libs/duskdelvers-0.1.0-alpha.jar
+          name: Duskdelvers-0.2.0-NeoForge-1.21.1
+          path: build/libs/duskdelvers-0.2.0.jar
           if-no-files-found: error
