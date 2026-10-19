@@ -26,6 +26,17 @@ public final class DuskConfig {
     public static final ModConfigSpec.BooleanValue AFFIX_BOSS_REWARDS;
     public static final ModConfigSpec.IntValue UNIDENTIFIED_REWARDS;
 
+    public static final List<ModConfigSpec.ConfigValue<String>> FTB_QUEST_IDS;
+    public static final ModConfigSpec.ConfigValue<String> SKILLS_CATEGORY;
+    public static final ModConfigSpec.IntValue SKILLS_XP_PER_TIER;
+    private static final java.util.Map<String,ModConfigSpec.BooleanValue> PROVIDERS = new java.util.LinkedHashMap<>();
+
+    public static boolean modAllowed(String mod){
+        ModConfigSpec.BooleanValue setting=PROVIDERS.get(mod);
+        return net.neoforged.fml.ModList.get().isLoaded(mod)
+                && (setting==null||setting.get());
+    }
+
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Duskdelvers settings for this server").push("expeditions");
@@ -89,6 +100,27 @@ public final class DuskConfig {
                 .define("apotheosisRewards", true);
         UNIDENTIFIED_REWARDS = builder.comment("TNK Loot unidentified tokens per eligible participant after boss victory.")
                 .defineInRange("tokensPerPlayer", 1, 0, 5);
+        builder.pop();
+        builder.comment("Optional content providers. All are runtime-detected and can be disabled individually.")
+                .push("providers");
+        for(String provider : List.of("tnkloot","apotheosis","epicfight","irons_spellbooks",
+                "alexscaves","cataclysm","twilightforest","aether","create",
+                "ars_nouveau","ftbteams","ftbquests","puffish_skills")){
+            PROVIDERS.put(provider,builder.define(provider,true));
+        }
+        builder.pop();
+        builder.comment("Integrations requiring modpack-defined quest/category IDs.")
+                .push("progression");
+        java.util.ArrayList<ModConfigSpec.ConfigValue<String>> quests=new java.util.ArrayList<>();
+        for(int tier=1;tier<=5;tier++){
+            quests.add(builder.comment("FTB Quests 64-bit hex quest ID for clearing Tier "+tier+". Blank skips.")
+                    .define("tier"+tier+"QuestId",""));
+        }
+        FTB_QUEST_IDS=List.copyOf(quests);
+        SKILLS_CATEGORY=builder.comment("Puffish Skills XP category, e.g. tnk3:exploration. Empty skips.")
+                .define("skillsCategory","");
+        SKILLS_XP_PER_TIER=builder.comment("XP granted to configured Puffish category per tier.")
+                .defineInRange("skillsXpPerTier",50,0,100000);
         builder.pop();
         SPEC = builder.build();
     }
