@@ -56,6 +56,9 @@ public final class ExpeditionQuota extends SavedData {
         }
         setDirty();
     }
+    public void reset(UUID player){
+        if(entries.remove(player)!=null)setDirty();
+    }
     public String status(ServerPlayer player){
         int remaining=remaining(player.getUUID());
         return remaining<0?"Unlimited daily entries":remaining+"/"+DuskConfig.DAILY_RUNS.get()+" entries remaining (UTC reset)";

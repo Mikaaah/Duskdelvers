@@ -48,7 +48,11 @@ public final class DuskCommands {
                     .then(Commands.literal("leave").executes(ctx -> teamLeave(ctx.getSource())))
                     .then(Commands.literal("ready").executes(ctx -> teamReady(ctx.getSource())))
                     .then(Commands.literal("status").executes(ctx -> teamStatus(ctx.getSource()))))
-                .then(Commands.literal("entries").executes(ctx -> entries(ctx.getSource())))
+                .then(Commands.literal("entries").executes(ctx -> entries(ctx.getSource()))
+                    .then(Commands.literal("reset").requires(src -> src.hasPermission(2))
+                        .then(Commands.argument("player",StringArgumentType.word())
+                            .executes(ctx -> resetEntries(ctx.getSource(),
+                                    StringArgumentType.getString(ctx,"player"))))))
                 .then(Commands.literal("compat").executes(ctx -> compat(ctx.getSource())))
                 .then(Commands.literal("daily").executes(ctx -> daily(ctx.getSource())))
                 .then(Commands.literal("exit").executes(ctx -> exit(ctx.getSource())))
@@ -259,6 +263,17 @@ public final class DuskCommands {
                 " • Maximum team size: "+DuskConfig.MAX_PARTY_SIZE.get()+
                 " • Maximum gathering radius: "+DuskConfig.PARTY_RADIUS.get()+" blocks "+
                 " • UTC midnight reset"),false);
+        return 1;
+    }
+
+    private static int resetEntries(CommandSourceStack source,String name){
+        ServerPlayer member=source.getServer().getPlayerList().getPlayerByName(name);
+        if(member==null){
+            source.sendFailure(Component.literal("Player must be online to reset entries."));
+            return 0;
+        }
+        ExpeditionQuota.get(source.getServer()).reset(member.getUUID());
+        source.sendSuccess(() -> Component.literal("Duskdelvers daily entries reset for "+name),true);
         return 1;
     }
 
