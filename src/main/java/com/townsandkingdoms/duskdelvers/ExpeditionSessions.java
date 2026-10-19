@@ -98,7 +98,7 @@ public final class ExpeditionSessions extends SavedData {
         for(int i=0;i<list.size();i++){
             try{
                 Run run=Run.fromTag(list.getCompound(i));
-                if(run.id()>0 && run.roomCount()>1 && !run.members().isEmpty())
+                if(run.id()>0 && run.roomCount()>0 && !run.members().isEmpty())
                     store.runs.put(run.id(),run);
             }catch(RuntimeException ignored){}
         }
