@@ -1,17 +1,22 @@
 # Changelog
 
+## 0.2.1 — Player-built Tier Gateways
+
+- Added five independently constructible 4×5 expedition portals, one for each difficulty tier.
+- Portals activate when the Delver's Compass is used on a matching completed frame.
+- Added distinct frame materials, tier-colored portal interiors, and horizontal X/Z orientations.
+- Walking into a gateway creates a new corresponding-tier expedition.
+- Added automatically constructed return portals in dungeon entry rooms and extraction portals in boss rooms after guardian defeat.
+- Added cooldown protection, frame-integrity checks and best-effort safe return positioning.
+- Added operator-only `/duskdelvers portal activate <x> <y> <z>` for frame debugging.
+- Preserved all 0.2.0 commands, existing encounter mechanics and compass fallback.
+- Added server smoke checks for all five portal frame materials.
+
 ## 0.2.0 — Expeditions feature-test build
 
-- Added a craftable Delver's Compass for starting and leaving runs, with sneaking to cycle difficulty tiers.
-- Added five selectable tiers, persistent expedition IDs and independent reserved dungeon regions.
-- Added generated connected paths of 5–9 rooms, corridors, lighting, tier-specific building palettes and loot caches.
-- Added datapack-driven enemy pools, tier-scaled monsters, elite encounters, a named final guardian and room clear tracking.
-- Added guardian treasure rewards, completion XP and server configuration.
-- Preserved original `/duskdelvers enter` test outpost; added `start <tier>` and run status.
-- Integrated official banner in README and the supplied square logo into NeoForge mod metadata.
+- Added five difficulty tiers, dungeon room generation, guardian encounters, loot caches, compass travel, and reloadable datapack mob pools.
+- Integrated official Duskdelvers banner and logo.
 
-**Limitations:** Dungeon pieces are assembled on demand, not with natural worldgen jigsaws; custom-model bosses, multiplayer parties, automatic resets and the twelve deep mod integrations are future milestones. Generated test regions persist after leaving.
+## 0.1.0-alpha — Dimension foundation
 
-## 0.1.0-alpha — Foundation
-
-- Added the NeoForge project, cave dimension, travel commands, fixed starter outpost and vault.
+- Added the NeoForge project, Chaos Caverns dimension, test outpost and vault.

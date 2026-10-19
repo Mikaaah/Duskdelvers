@@ -1,4 +1,10 @@
 {
   "item.duskdelvers.delvers_compass": "Delver's Compass",
+  "block.duskdelvers.return_gateway": "Return Gateway",
+  "block.duskdelvers.tier_1_portal": "Forgotten Depths Gateway",
+  "block.duskdelvers.tier_2_portal": "Shattered Hollows Gateway",
+  "block.duskdelvers.tier_3_portal": "Resonant Abyss Gateway",
+  "block.duskdelvers.tier_4_portal": "Ancient Dominion Gateway",
+  "block.duskdelvers.tier_5_portal": "Chaos Unbound Gateway",
   "dimension.duskdelvers.chaos_caverns": "Chaos Caverns"
 }

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "duskdelvers:block/tier_3_portal"
+    },
+    "axis=z": {
+      "model": "duskdelvers:block/tier_3_portal"
+    }
+  }
+}

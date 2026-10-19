@@ -13,6 +13,13 @@
 - [x] Official branding and CI build.
 - [ ] Player game-testing and multiplayer validation.
 
+## 0.2.1 — Player-built tier gateways
+- [x] Five player-crafted 4×5 portal frame materials and distinct portal states.
+- [x] Compass activation with structural validation and frame breaking detection.
+- [x] Return gateway in entry room and extraction portal on guardian defeat.
+- [x] Portal travel cooldown, safe-return attempt and command debug validation.
+- [ ] In-game client rendering and survival construction testing.
+
 ## 0.3.x — Caverns & dungeon expansion
 - [ ] True natural jigsaw structure generation, new modular rooms and custom dungeon features.
 - [ ] Custom cave biomes and fluid/terrain polishing.

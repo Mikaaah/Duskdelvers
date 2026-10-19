@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "duskdelvers:block/return_gateway"
+    },
+    "axis=z": {
+      "model": "duskdelvers:block/return_gateway"
+    }
+  }
+}
