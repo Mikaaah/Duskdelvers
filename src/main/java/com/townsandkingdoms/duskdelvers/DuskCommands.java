@@ -99,82 +99,72 @@ public final class DuskCommands {
         // Fallback: original position with a cooldown rather than an unsafe teleport.
     }
 
-    private static int enter(CommandSourceStack source) throws CommandSyntaxException {
-        ServerPlayer player=source.getPlayerOrException();
-        if (player.serverLevel().dimension().equals(CHAOS_CAVERNS)) {
-            player.sendSystemMessage(Component.literal("Already inside the Chaos Caverns."));
-            return 0;
-        }
-        ServerLevel destination=source.getServer().getLevel(CHAOS_CAVERNS);
-        if (destination==null) {
-            player.sendSystemMessage(Component.literal("Chaos Caverns dimension is not loaded; check your datapacks."));
-            return 0;
-        }
-        rememberOrigin(player);
-        StarterOutpost.ensureCreated(destination);
-        player.teleportTo(destination,0.5,72,0.5,Set.of(),player.getYRot(),player.getXRot());
-        ExpeditionTimer.start(player, 0);
-        player.sendSystemMessage(Component.literal("Entered the original arrival outpost. Use /duskdelvers start <1-5> for a generated dungeon."));
-        return 1;
+    private static int enter(CommandSourceStack source) throws CommandSyntaxException{
+        // Legacy shortcut now opens a Tier-I open-world expedition. No outpost,
+        // starter chamber, or authored rooms are generated anywhere.
+        return startPlayer(source.getPlayerOrException(),1)?1:0;
     }
 
-    private static int start(CommandSourceStack source,int tier) throws CommandSyntaxException {
-        return startPlayer(source.getPlayerOrException(),tier) ? 1 : 0;
+    private static int start(CommandSourceStack source,int tier) throws CommandSyntaxException{
+        return startPlayer(source.getPlayerOrException(),tier)?1:0;
     }
 
-    public static boolean startPlayer(ServerPlayer player,int tier) {
-        if (!DuskConfig.EXPEDITIONS_ENABLED.get()) {
-            player.sendSystemMessage(Component.literal("Expeditions are disabled by the server config."));
+    public static boolean startPlayer(ServerPlayer player,int tier){
+        if(!DuskConfig.EXPEDITIONS_ENABLED.get()){
+            player.sendSystemMessage(Component.literal("Cavern expeditions are disabled."));
             return false;
         }
-        if (tier < 1 || tier > 5) return false;
+        if(tier<1||tier>5)return false;
         ServerLevel dungeon=player.getServer().getLevel(CHAOS_CAVERNS);
-        if (dungeon==null) {
-            player.sendSystemMessage(Component.literal("Chaos Caverns dimension is missing. Check datapack errors."));
+        if(dungeon==null){
+            player.sendSystemMessage(Component.literal("Chaos Caverns dimension failed to load."));
+            return false;
+        }
+        if(player.serverLevel().dimension().equals(CHAOS_CAVERNS)){
+            player.sendSystemMessage(Component.literal("Exit the current expedition before starting another."));
             return false;
         }
         List<ServerPlayer> members=ExpeditionParty.participants(player);
-        if(members.isEmpty()) return false;
+        if(members.isEmpty())return false;
         ExpeditionQuota quota=ExpeditionQuota.get(player.getServer());
         if(!quota.canStart(members)){
             for(ServerPlayer member:members){
                 if(quota.remaining(member.getUUID())==0)
-                    player.sendSystemMessage(Component.literal(member.getGameProfile().getName()
-                            +" has used all expedition entries for today."));
+                    player.sendSystemMessage(Component.literal(member.getGameProfile().getName()+
+                            " has no expedition entries remaining today."));
             }
             return false;
         }
         int id=ExpeditionIndex.get(player.getServer()).allocate();
-        ExpeditionLayout layout=ExpeditionLayout.generate(id,tier,dungeon.getSeed());
-        if(layout.rooms().size()<3){
-            player.sendSystemMessage(Component.literal("Failed to generate an expedition route."));
+        BlockPos landing;
+        try{
+            landing=CavernArrival.locate(dungeon,id,tier);
+        }catch(RuntimeException ex){
+            Duskdelvers.LOG.error("Failed preparing natural cavern arrival for expedition {}",id,ex);
+            player.sendSystemMessage(Component.literal("Could not find safe cavern terrain. No entries were used."));
             return false;
         }
-        try {
-            DungeonBuilder.build(dungeon,layout);
-        } catch(RuntimeException ex) {
-            Duskdelvers.LOG.error("Failed constructing expedition {}",id,ex);
-            player.sendSystemMessage(Component.literal("Dungeon generation failed. No entries were charged."));
-            return false;
-        }
-
-        // Store the session before charging entries. All members are committed as a group.
+        ExpeditionLayout layout=ExpeditionLayout.at(id,tier,landing);
         ExpeditionSessions sessions=ExpeditionSessions.get(player.getServer());
         ExpeditionSessions.Run run=sessions.create(layout,members);
         quota.consume(members);
-        var spawn=layout.rooms().get(0);
+        int biomeDanger=CavernBiomes.tier(dungeon.getBiome(landing));
+        String biomeName=CavernBiomes.name(dungeon.getBiome(landing));
+
         for(ServerPlayer member:members){
-            if(!member.serverLevel().dimension().equals(CHAOS_CAVERNS))rememberOrigin(member);
-            member.getPersistentData().put(ExpeditionRuntime.ACTIVE,layout.toTag());
+            rememberOrigin(member);
             member.getPersistentData().putInt(ExpeditionSessions.PLAYER_RUN_ID,id);
-            ExpeditionTimer.clear(member); // Shared session owns the timer.
-            member.teleportTo(dungeon,spawn.getX()+0.5,spawn.getY()+1.0,spawn.getZ()+0.5,
-                    Set.of(),member.getYRot(),member.getXRot());
+            // Retain only legacy metadata for save compatibility; no room objectives.
+            member.getPersistentData().put(ExpeditionRuntime.ACTIVE,layout.toTag());
+            ExpeditionTimer.clear(member);
+            member.teleportTo(dungeon,landing.getX()+0.5,landing.getY(),
+                    landing.getZ()+0.5,Set.of(),member.getYRot(),member.getXRot());
             member.sendSystemMessage(Component.literal(
-                    "Duskdelvers • Tier "+tier+" • Team expedition #"+id+
-                    " • "+members.size()+" adventurers • "+layout.rooms().size()+
-                    " rooms • "+(run.seconds()<0?"No time limit":run.timeText()+" time")+
-                    " • "+quota.status(member)));
+                    "Duskdelvers Expedition #"+id+" • Gateway Tier "+tier+" • "+
+                    biomeName+" (Danger "+biomeDanger+"/5) • "+
+                    (run.seconds()<0?"Unlimited time":run.timeText()+" remaining")+
+                    " • "+quota.status(member)+
+                    ". Explore natural caverns and discover loot caches!"));
         }
         return true;
     }
@@ -312,13 +302,14 @@ public final class DuskCommands {
         var active=sessions.forPlayer(player);
         if(active!=null){
             player.sendSystemMessage(Component.literal("Expedition #"+active.id()+" • Tier "+
-                    active.tier()+" • Rooms cleared "+Integer.bitCount(active.cleared())+"/"+(active.roomCount()-1)+
-                    " • Party "+active.members().size()+" • "+
-                    (active.completed()?"COMPLETE":active.expired()?"EXPIRED":"active")+
+                    active.tier()+" • Biome "+CavernBiomes.name(player.serverLevel().getBiome(player.blockPosition()))+
+                    " • Danger "+CavernBiomes.tier(player.serverLevel().getBiome(player.blockPosition()))+
+                    "/5 • Party "+active.members().size()+" • "+
+                    (active.expired()?"EXPIRED":"exploring")+
                     " • "+(active.seconds()<0?"Unlimited time":active.timeText()+" remaining")+
                     " • "+ExpeditionQuota.get(player.getServer()).status(player)));
         }else{
-            player.sendSystemMessage(Component.literal("Duskdelvers 0.3.0 • No active team expedition • "+
+            player.sendSystemMessage(Component.literal("Duskdelvers 0.4.0 • No active expedition • "+
                     ExpeditionTimer.status(player)+" • "+ExpeditionQuota.get(player.getServer()).status(player)));
         }
         return 1;
