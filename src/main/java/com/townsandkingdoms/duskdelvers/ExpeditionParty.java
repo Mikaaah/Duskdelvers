@@ -124,7 +124,7 @@ public final class ExpeditionParty {
                 selected.put(id,member);
             }
         }
-        if(DuskConfig.FTB_TEAMS.get() && ModList.get().isLoaded("ftbteams") &&
+        if(DuskConfig.FTB_TEAMS.get() && DuskConfig.modAllowed("ftbteams") &&
                 leader.getPersistentData().getBoolean(FTB_READY)){
             Optional<String> team=ftbTeamKey(leader);
             if(team.isPresent()){
