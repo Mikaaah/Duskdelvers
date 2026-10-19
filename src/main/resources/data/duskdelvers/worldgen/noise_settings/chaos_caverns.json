@@ -600,7 +600,7 @@
               "then_run": {
                 "type": "minecraft:block",
                 "result_state": {
-                  "Name": "minecraft:amethyst_block"
+                  "Name": "minecraft:calcite"
                 }
               }
             },
@@ -616,7 +616,7 @@
               "then_run": {
                 "type": "minecraft:block",
                 "result_state": {
-                  "Name": "minecraft:amethyst_block"
+                  "Name": "minecraft:calcite"
                 }
               }
             }
@@ -830,7 +830,7 @@
               "then_run": {
                 "type": "minecraft:block",
                 "result_state": {
-                  "Name": "minecraft:glowstone"
+                  "Name": "minecraft:smooth_basalt"
                 }
               }
             },
@@ -846,7 +846,7 @@
               "then_run": {
                 "type": "minecraft:block",
                 "result_state": {
-                  "Name": "minecraft:glowstone"
+                  "Name": "minecraft:smooth_basalt"
                 }
               }
             }
