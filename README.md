@@ -1,4 +1,11 @@
-# Duskdelvers
+# Duskdelvers — Expeditions
+
+<p align="center">
+  <img alt="Minecraft 1.21.1" src="https://img.shields.io/badge/Minecraft-1.21.1-462663?style=flat-square">
+  <img alt="NeoForge" src="https://img.shields.io/badge/Loader-NeoForge-6B2C8F?style=flat-square">
+  <img alt="Java 21" src="https://img.shields.io/badge/Java-21-88495E?style=flat-square">
+  <img alt="Alpha" src="https://img.shields.io/badge/Status-Alpha-B327CF?style=flat-square">
+</p>
 
 > **Beneath the kingdoms, darkness holds its own.**
 
@@ -35,7 +42,7 @@ The CI workflow compiles the mod with Java 21 and publishes its JAR as a GitHub 
 gradle build --no-daemon
 ```
 
-Read [the roadmap](docs/ROADMAP.md), [architecture](docs/ARCHITECTURE.md) and [compatibility plan](docs/COMPATIBILITY.md).
+Read [the roadmap](docs/ROADMAP.md), [architecture](docs/ARCHITECTURE.md), [compatibility plan](docs/COMPATIBILITY.md), and [official branding guidelines](docs/BRANDING.md).
 
 ## License
 
