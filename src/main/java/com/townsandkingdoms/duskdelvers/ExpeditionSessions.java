@@ -26,6 +26,7 @@ public final class ExpeditionSessions extends SavedData {
         private boolean completed;
         private boolean expired;
         private transient long lastSecond=-1;
+        private final Set<UUID> rewarded=new HashSet<>();
 
         private Run(ExpeditionLayout layout,List<UUID> members,int seconds){
             this.layout=layout;
@@ -43,6 +44,7 @@ public final class ExpeditionSessions extends SavedData {
         public boolean completed(){return completed;}
         public boolean expired(){return expired;}
         public boolean member(UUID id){return members.contains(id);}
+        public boolean rewarded(UUID id){return rewarded.contains(id);}
         public int roomCount(){return layout.rooms().size();}
 
         public String timeText(){return "%d:%02d".formatted(seconds/60,seconds%60);}
@@ -55,6 +57,13 @@ public final class ExpeditionSessions extends SavedData {
                 list.add(row);
             }
             tag.put("members",list);
+            ListTag rewards=new ListTag();
+            for(UUID uuid:rewarded) {
+                CompoundTag row=new CompoundTag();
+                row.putString("uuid",uuid.toString());
+                rewards.add(row);
+            }
+            tag.put("rewarded",rewards);
             tag.putInt("activated",activated);
             tag.putInt("cleared",cleared);
             tag.putInt("seconds",seconds);
@@ -74,6 +83,11 @@ public final class ExpeditionSessions extends SavedData {
             run.cleared=tag.getInt("cleared");
             run.completed=tag.getBoolean("completed");
             run.expired=tag.getBoolean("expired");
+            ListTag rewards=tag.getList("rewarded",Tag.TAG_COMPOUND);
+            for(int i=0;i<rewards.size();i++){
+                try{run.rewarded.add(UUID.fromString(rewards.getCompound(i).getString("uuid")));}
+                catch(IllegalArgumentException ignored){}
+            }
             return run;
         }
     }
@@ -159,6 +173,10 @@ public final class ExpeditionSessions extends SavedData {
             setDirty();
         }
         return run.seconds==0;
+    }
+
+    public void markRewarded(Run run,UUID player){
+        if(run.member(player)&&run.rewarded.add(player))setDirty();
     }
 
     public void expire(Run run){
