@@ -26,6 +26,8 @@ public final class Duskdelvers {
     public static final Logger LOG = LoggerFactory.getLogger("Duskdelvers");
     public static final DeferredRegister<Feature<?>> FEATURES =
             DeferredRegister.create(BuiltInRegistries.FEATURE,MOD_ID);
+    public static final Supplier<Feature<NoneFeatureConfiguration>> CAVERN_ACCENT =
+            FEATURES.register("cavern_accent", () -> new CavernAccentFeature(NoneFeatureConfiguration.CODEC));
     public static final Supplier<Feature<NoneFeatureConfiguration>> CAVERN_CACHE =
             FEATURES.register("cavern_cache", () -> new CavernCacheFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);

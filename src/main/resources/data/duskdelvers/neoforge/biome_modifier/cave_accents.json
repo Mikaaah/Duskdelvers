@@ -1,0 +1,23 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "duskdelvers:limestone_hollows",
+    "duskdelvers:mosslit_grotto",
+    "duskdelvers:fungal_glades",
+    "duskdelvers:twilight_thicket",
+    "duskdelvers:dripstone_chasms",
+    "duskdelvers:glimmering_depths",
+    "duskdelvers:enchanted_grove",
+    "duskdelvers:aether_glades",
+    "duskdelvers:frostbound_caverns",
+    "duskdelvers:resonant_crystalfields",
+    "duskdelvers:golden_sanctuary",
+    "duskdelvers:ashen_abyss",
+    "duskdelvers:chaos_rift",
+    "duskdelvers:shattered_void",
+    "duskdelvers:glowing_highlands",
+    "duskdelvers:soulbound_crypts"
+  ],
+  "features": "duskdelvers:cavern_accent",
+  "step": "vegetal_decoration"
+}
