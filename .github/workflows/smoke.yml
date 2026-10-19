@@ -1,0 +1,35 @@
+name: Headless Server Smoke Test
+on:
+  push:
+    paths:
+      - '.github/workflows/smoke.yml'
+      - 'src/**'
+      - 'build.gradle'
+      - 'gradle.properties'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.1'
+      - name: Start server and test custom dimension
+        run: python3 scripts/server_smoke.py
+      - name: Upload diagnostic server log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: duskdelvers-server-smoke-log
+          path: server-smoke.log
+          if-no-files-found: ignore
