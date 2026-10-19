@@ -15,10 +15,10 @@
 
 ## Project links
 
-- [Official project wiki](https://github.com/Mikaaah/Duskdelvers/wiki)
-- [Development roadmap](docs/ROADMAP.md)
-- [Architecture and current limitations](docs/ARCHITECTURE.md)
-- [Compatibility plan](docs/COMPATIBILITY.md)
+- [Official project wiki](https://github.com/Mikaaah/Duskdelvers/wiki) · [Getting started](https://github.com/Mikaaah/Duskdelvers/wiki/Getting-Started) · [Commands](https://github.com/Mikaaah/Duskdelvers/wiki/Commands)
+- [Chaos Caverns](https://github.com/Mikaaah/Duskdelvers/wiki/Chaos-Caverns) · [Compatibility](https://github.com/Mikaaah/Duskdelvers/wiki/Compatibility) · [Troubleshooting](https://github.com/Mikaaah/Duskdelvers/wiki/Troubleshooting)
+- [Development roadmap](https://github.com/Mikaaah/Duskdelvers/wiki/Roadmap) · [Technical roadmap](docs/ROADMAP.md)
+- [Architecture and current limitations](docs/ARCHITECTURE.md) · [Compatibility plan](docs/COMPATIBILITY.md)
 
 ## Current status
 
