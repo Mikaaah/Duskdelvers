@@ -130,6 +130,8 @@ public final class ExpeditionParty {
             if(team.isPresent()){
                 for(ServerPlayer online:server.getPlayerList().getPlayers()){
                     if(!online.getPersistentData().getBoolean(FTB_READY))continue;
+                    if(online.serverLevel()!=leader.serverLevel()||
+                            online.distanceToSqr(leader)>Math.pow(DuskConfig.PARTY_RADIUS.get(),2))continue;
                     if(team.equals(ftbTeamKey(online)))selected.putIfAbsent(online.getUUID(),online);
                 }
             }
