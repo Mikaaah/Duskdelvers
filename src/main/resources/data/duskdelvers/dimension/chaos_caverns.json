@@ -1,0 +1,48 @@
+{
+  "type": "duskdelvers:chaos_caverns",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "minecraft:dripstone_caves",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0,
+            "offset": 0,
+            "temperature": 0,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "minecraft:lush_caves",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": 0.4,
+            "offset": 0,
+            "temperature": 0.75,
+            "weirdness": 0
+          }
+        },
+        {
+          "biome": "minecraft:deep_dark",
+          "parameters": {
+            "continentalness": 0,
+            "depth": 0,
+            "erosion": 0,
+            "humidity": -0.4,
+            "offset": 0,
+            "temperature": -0.75,
+            "weirdness": 0
+          }
+        }
+      ]
+    },
+    "settings": "duskdelvers:chaos_caverns"
+  }
+}

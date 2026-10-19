@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/Mikaaah/Duskdelvers/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+displayURL="https://github.com/Mikaaah/Duskdelvers"
+authors="Mikaaah / Towns & Kingdoms"
+description='''
+Descend into the Chaos Caverns. An exploration and dungeon-expedition mod for Towns & Kingdoms.
+0.1.0-alpha is the initial world-generation and test-vault foundation.
+'''
+
+[[dependencies.${mod_id}]]
+modId="neoforge"
+type="required"
+versionRange="[${neo_version},)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"
